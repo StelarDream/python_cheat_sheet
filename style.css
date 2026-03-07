@@ -1,0 +1,97 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    grid-template-areas:
+        "top-bar top-bar"
+        "side-bar content";
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+}
+
+code {
+    font-family: monospace;
+    background: #f4f4f4;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.top-bar {
+    grid-area: top-bar;
+}
+
+.side-bar {
+    grid-area: side-bar;
+}
+
+.content {
+    grid-area: content;
+    padding: 24px;
+}
+
+.gallery {
+    margin-bottom: 48px;
+}
+
+.gallery-header {
+    margin-bottom: 20px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.block {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background: white;
+}
+
+.dunder-name {
+    margin-top: 0;
+    font-family: monospace;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    margin-bottom: 10px;
+}
+
+/* styled brackets */
+.type::before {
+    content: "[";
+    color: #888;
+    font-weight: 500;
+}
+
+.type::after {
+    content: "]";
+    color: #888;
+    font-weight: 500;
+}
+
+.type {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.points {
+    padding-left: 18px;
+}
+
