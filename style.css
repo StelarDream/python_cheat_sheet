@@ -13,10 +13,51 @@ body {
 }
 
 /* =========================
+   Theme
+========================= */
+
+:root {
+
+    /* VSCode-style bluish darks */
+    --bg-main: #1e1f22;
+    --bg-sidebar: #232428;
+    --bg-card: #2b2d31;
+    --bg-soft: #313338;
+
+    /* subtle bluish grey borders */
+    --border-soft: #3b3e45;
+
+    /* text */
+    --text-main: #e3e6ea;
+    --text-soft: #aeb3bb;
+    --text-dim: #8b919a;
+
+    /* accents */
+    --accent: #6aa2ff;
+    --result: #4fd1a5;
+    --type: #4EC9B0;
+
+    /* code */
+    --code-bg: #1b1c20;
+}
+
+/* =========================
    Layout
 ========================= */
 
 body {
+
+    background: var(--bg-main);
+    color: var(--text-main);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        Segoe UI,
+        Roboto,
+        sans-serif;
+
     display: grid;
 
     grid-template-areas:
@@ -29,17 +70,59 @@ body {
     min-height: 100vh;
 }
 
+/* =========================
+   Top bar
+========================= */
+
 .top-bar {
+
     grid-area: top-bar;
+
+    background: var(--bg-sidebar);
+
+    border-bottom: 1px solid var(--border-soft);
+
+    padding: 12px 20px;
+
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
+
+/* =========================
+   Sidebar
+========================= */
 
 .side-bar {
+
     grid-area: side-bar;
+
+    background: var(--bg-sidebar);
+
+    border-right: 1px solid var(--border-soft);
+
+    padding: 20px;
 }
 
+.side-bar a {
+    color: var(--text-soft);
+    text-decoration: none;
+}
+
+.side-bar a:hover {
+    color: var(--accent);
+}
+
+/* =========================
+   Content
+========================= */
+
 .content {
+
     grid-area: content;
-    padding: 24px;
+
+    padding: 28px;
+
+    max-width: 1200px;
 }
 
 /* =========================
@@ -47,12 +130,21 @@ body {
 ========================= */
 
 code {
-    font-family: monospace;
+
+    font-family:
+        "JetBrains Mono",
+        "Fira Code",
+        monospace;
+
     font-size: 12px;
 
-    background: #f4f4f4;
+    background: var(--code-bg);
+
     padding: 3px 6px;
+
     border-radius: 4px;
+
+    color: #d6deeb;
 }
 
 /* =========================
@@ -60,17 +152,28 @@ code {
 ========================= */
 
 .gallery {
-    margin-bottom: 48px;
+    margin-bottom: 52px;
 }
 
 .gallery-header {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+}
+
+.gallery-header h2 {
+    margin-bottom: 6px;
+}
+
+.gallery-header p {
+    color: var(--text-soft);
 }
 
 .gallery-grid {
+
     display: grid;
+
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+
+    gap: 18px;
 }
 
 /* =========================
@@ -78,25 +181,63 @@ code {
 ========================= */
 
 .block {
-    background: white;
 
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background: var(--bg-card);
 
-    padding: 16px;
+    border: 1px solid var(--border-soft);
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    transition:
+        transform 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.block:hover {
+
+    border-color: var(--accent);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
 }
 
 .dunder-name {
+
     margin-top: 0;
-    font-family: monospace;
+    margin-bottom: 0.4em;
+
+    font-family:
+        "JetBrains Mono",
+        monospace;
+        
+    color: var(--accent);
 }
 
+.block-desc {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+/* =========================
+   Meta
+========================= */
+
 .meta {
+
     display: flex;
+
     align-items: center;
-    gap: 0.3em;
+
+    gap: 0.4em;
 
     margin-bottom: 10px;
+
+    color: var(--text-soft);
+
 }
 
 /* =========================
@@ -104,14 +245,25 @@ code {
 ========================= */
 
 .type {
+
     display: inline-flex;
-    align-items: center;
+
+    align-items: baseline;
+
     gap: 2px;
+
+    
+}
+
+.type code {
+    color: var(--type)
 }
 
 .type::before,
 .type::after {
-    color: #888;
+
+    color: var(--text-dim);
+
     font-weight: 500;
 }
 
@@ -128,18 +280,36 @@ code {
 ========================= */
 
 .points {
+
     padding-left: 18px;
+
+}
+
+.points li {
+    margin-bottom: 4px;
 }
 
 /* =========================
    Examples
 ========================= */
+
 .example {
-    background: #fafafa;
-    border: 1px solid #eee;
+
+    background: var(--bg-soft);
+
+    border: 1px solid var(--border-soft);
+
     border-radius: 6px;
+
     padding: 8px 10px;
+
     margin: 8px 0;
+
+    font-family:
+        "JetBrains Mono",
+        monospace;
+
+    font-size: 12px;
 }
 
 .example code {
@@ -148,6 +318,8 @@ code {
 }
 
 .result {
-    color: rgb(48, 119, 93);
+
+    color: var(--result);
+
     font-weight: 500;
 }

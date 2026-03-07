@@ -4,12 +4,14 @@
         {
             "id": "python-object-base",
             "name": "Python Object Base",
+            "link": "", 
             "desc": "the attributes found in almost all object",
             "point": [],
             "blocks": [
                 {
                     "id": "__class__",
                     "name": "__class__",
+                    "link": "",
                     "kind": "attribute",
                     "value_type": "type",
                     "desc": "Reference to the object's class.",
@@ -20,18 +22,16 @@
                         "obj.__class__",
                         {
                             "value": "type(obj)",
-                            "comment": "usually equivalent"
+                            "comment": "usually equivalent",
+                            "link": ""
                         }
                     ],
                     "examples": [
                         {
                             "code": "type(5)",
-                            "result": "<class 'int'>"
+                            "result": "<class 'int'>",
+                            "link": ""
                         }
-                    ],
-                    "related": [
-                        "__dict__",
-                        "__annotations__"
                     ]
                 }
             ]
