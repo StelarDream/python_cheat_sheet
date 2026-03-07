@@ -4,32 +4,2224 @@
         {
             "id": "python-object-base",
             "name": "Python Object Base",
-            "link": "", 
-            "desc": "the attributes found in almost all object",
+            "link": "https://docs.python.org/3/reference/datamodel.html",
+            "desc": "Attributes found in almost all Python objects.",
             "point": [],
             "blocks": [
                 {
                     "id": "__class__",
                     "name": "__class__",
-                    "link": "",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__class__",
                     "kind": "attribute",
                     "value_type": "type",
                     "desc": "Reference to the object's class.",
                     "point": [
-                        "Lets you inspect the runtime type of an object."
+                        "Lets you inspect the runtime type of an object.",
+                        "Usually equivalent to calling type(obj)."
                     ],
                     "getters": [
                         "obj.__class__",
                         {
                             "value": "type(obj)",
                             "comment": "usually equivalent",
-                            "link": ""
+                            "link": "https://docs.python.org/3/library/functions.html#type"
                         }
                     ],
                     "examples": [
                         {
                             "code": "type(5)",
                             "result": "<class 'int'>",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__dict__",
+                    "name": "__dict__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__dict__",
+                    "kind": "attribute",
+                    "value_type": "dict",
+                    "desc": "Dictionary storing an object's writable attributes.",
+                    "point": [
+                        "Contains the object's attribute namespace.",
+                        "Not present on objects using __slots__.",
+                        "Often used for debugging or dynamic attribute manipulation."
+                    ],
+                    "getters": [
+                        "obj.__dict__",
+                        {
+                            "value": "vars(obj)",
+                            "comment": "returns the same dict",
+                            "link": "https://docs.python.org/3/library/functions.html#vars"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    pass\n\na = A()\na.x = 10\na.__dict__",
+                            "result": "{'x': 10}",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__doc__",
+                    "name": "__doc__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__doc__",
+                    "kind": "attribute",
+                    "value_type": "str | None",
+                    "desc": "The documentation string associated with an object.",
+                    "point": [
+                        "Used by help() and many documentation tools.",
+                        "Usually defined as the first string literal in a class or function."
+                    ],
+                    "getters": [
+                        "obj.__doc__",
+                        {
+                            "value": "help(obj)",
+                            "comment": "shows docstring in interactive help",
+                            "link": "https://docs.python.org/3/library/functions.html#help"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "code": "def f():\n    \"\"\"Example function\"\"\"\n\nprint(f.__doc__)",
+                            "result": "Example function",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__module__",
+                    "name": "__module__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__module__",
+                    "kind": "attribute",
+                    "value_type": "str",
+                    "desc": "Name of the module in which a class or function was defined.",
+                    "point": [
+                        "Useful for reflection and debugging.",
+                        "Helps identify where a class or object originates."
+                    ],
+                    "getters": [
+                        "obj.__module__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "import math\nmath.sin.__module__",
+                            "result": "'math'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__annotations__",
+                    "name": "__annotations__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__annotations__",
+                    "kind": "attribute",
+                    "value_type": "dict",
+                    "desc": "Dictionary containing type annotations declared on the object.",
+                    "point": [
+                        "Used heavily by static type checkers and frameworks.",
+                        "Keys are variable or parameter names, values are type hints."
+                    ],
+                    "getters": [
+                        "obj.__annotations__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "def f(x: int) -> str:\n    pass\n\nf.__annotations__",
+                            "result": "{'x': int, 'return': str}",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__dir__",
+                    "name": "__dir__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__dir__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], list[str]]",
+                    "desc": "Returns the list of attributes available on the object.",
+                    "point": [
+                        "Called by the builtin dir() function.",
+                        "Allows objects to customize their interactive attribute listing.",
+                        "Typically returns a sorted list of attribute names."
+                    ],
+                    "getters": [
+                        {
+                            "value": "dir(obj)",
+                            "value_type": "Callable[[object], list[str]]",
+                            "comment": "calls obj.__dir__() internally",
+                            "link": "https://docs.python.org/3/library/functions.html#dir"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __dir__(self):\n        return ['x', 'y']\n\nprint(dir(A()))",
+                            "result": "['x', 'y']",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__weakref__",
+                    "name": "__weakref__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#slots",
+                    "kind": "attribute",
+                    "value_type": "weakref",
+                    "desc": "Slot used to store weak references to the object.",
+                    "point": [
+                        "Automatically added for objects that support weak references.",
+                        "Missing when __slots__ disables it."
+                    ],
+                    "getters": [
+                        "obj.__weakref__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "import weakref\nclass A: pass\na = A()\nweakref.ref(a)",
+                            "result": "<weakref ...>",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__slots__",
+                    "name": "__slots__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#slots",
+                    "kind": "attribute",
+                    "value_type": "tuple[str]",
+                    "desc": "Declares a fixed set of attributes to avoid using __dict__.",
+                    "point": [
+                        "Reduces memory usage for many instances.",
+                        "Prevents creation of arbitrary attributes.",
+                        "May remove __dict__ and __weakref__ unless explicitly included."
+                    ],
+                    "getters": [
+                        "Class.__slots__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    __slots__ = ('x',)\n\na = A()\na.x = 5",
+                            "result": "works but a.y = 1 would fail",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-attribute-access",
+            "name": "Attribute Access Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#customizing-attribute-access",
+            "desc": "Mechanisms controlling how attributes are retrieved, assigned, or deleted on objects.",
+            "point": [
+                "These methods define the attribute access protocol.",
+                "They are invoked by Python during attribute lookup or modification.",
+                "Built-in functions such as getattr and setattr use this protocol internally."
+            ],
+            "blocks": [
+                {
+                    "id": "__getattribute__",
+                    "name": "__getattribute__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__getattribute__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, str], Any]",
+                    "desc": "Called for every attribute access on the instance.",
+                    "point": [
+                        "Intercepts all obj.attr lookups.",
+                        "Executed before __getattr__.",
+                        "Must delegate to super().__getattribute__ to avoid infinite recursion."
+                    ],
+                    "getters": [
+                        "obj.__getattribute__('attr')"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __getattribute__(self, name):\n        print('access', name)\n        return super().__getattribute__(name)\n\na = A()\na.__class__",
+                            "result": "prints 'access __class__'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__getattr__",
+                    "name": "__getattr__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__getattr__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, str], Any]",
+                    "desc": "Fallback method called when attribute lookup fails.",
+                    "point": [
+                        "Called only if normal attribute lookup raises AttributeError.",
+                        "Often used for lazy attributes or proxy objects."
+                    ],
+                    "getters": [
+                        "obj.__getattr__('attr')"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __getattr__(self, name):\n        return 42\n\na = A()\na.anything",
+                            "result": "42",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__setattr__",
+                    "name": "__setattr__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__setattr__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, str, Any], None]",
+                    "desc": "Called when an attribute assignment occurs.",
+                    "point": [
+                        "Intercepts obj.attr = value.",
+                        "Custom implementations must call super().__setattr__ to perform the actual assignment."
+                    ],
+                    "getters": [
+                        "obj.__setattr__('attr', value)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __setattr__(self, name, value):\n        print('setting', name)\n        super().__setattr__(name, value)\n\na = A()\na.x = 10",
+                            "result": "prints 'setting x'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__delattr__",
+                    "name": "__delattr__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__delattr__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, str], None]",
+                    "desc": "Called when an attribute deletion occurs.",
+                    "point": [
+                        "Intercepts del obj.attr.",
+                        "Custom implementations must call super().__delattr__ to delete the attribute."
+                    ],
+                    "getters": [
+                        "obj.__delattr__('attr')"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    x = 10\n\na = A()\ndel a.x",
+                            "result": "attribute removed",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "getattr",
+                    "name": "getattr(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#getattr",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, str], Any]",
+                    "desc": "Retrieve an attribute value from an object.",
+                    "point": [
+                        "Triggers the attribute access protocol.",
+                        "Equivalent to obj.attr lookup.",
+                        "Supports a default value if the attribute is missing."
+                    ],
+                    "getters": [
+                        "getattr(obj, 'attr')",
+                        "getattr(obj, 'attr', default)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    x = 10\n\ngetattr(A(), 'x')",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "setattr",
+                    "name": "setattr(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#setattr",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, str, Any], None]",
+                    "desc": "Set an attribute on an object.",
+                    "point": [
+                        "Triggers __setattr__ if defined.",
+                        "Equivalent to obj.attr = value."
+                    ],
+                    "getters": [
+                        "setattr(obj, 'attr', value)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    pass\n\na = A()\nsetattr(a, 'x', 10)\na.x",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "delattr",
+                    "name": "delattr(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#delattr",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, str], None]",
+                    "desc": "Delete an attribute from an object.",
+                    "point": [
+                        "Triggers __delattr__ if implemented.",
+                        "Equivalent to del obj.attr."
+                    ],
+                    "getters": [
+                        "delattr(obj, 'attr')"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    x = 10\n\na = A()\ndelattr(a, 'x')",
+                            "result": "attribute removed",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "hasattr",
+                    "name": "hasattr(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#hasattr",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, str], bool]",
+                    "desc": "Check whether an object appears to have a given attribute.",
+                    "point": [
+                        "Returns True if attribute lookup succeeds.",
+                        "Internally implemented using getattr and catching AttributeError.",
+                        "Triggers the full attribute access protocol."
+                    ],
+                    "getters": [
+                        "hasattr(obj, 'attr')"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    x = 10\n\nhasattr(A(), 'x')",
+                            "result": "True",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-class-basics",
+            "name": "Class Basics / Construction",
+            "link": "https://docs.python.org/3/reference/datamodel.html#customizing-instance-and-subclass-creation",
+            "desc": "Mechanisms controlling how classes create instances and how subclasses are initialized.",
+            "point": [
+                "These methods control instance creation and class behaviour.",
+                "They are executed during object construction or subclass definition.",
+                "They form the foundation of Python's class system."
+            ],
+            "blocks": [
+                {
+                    "id": "__new__",
+                    "name": "__new__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__new__",
+                    "kind": "method",
+                    "value_type": "Callable[[type[Self], ...], Self]",
+                    "desc": "Creates and returns a new instance of the class.",
+                    "point": [
+                        "Executed before __init__.",
+                        "Responsible for allocating the instance.",
+                        "Commonly overridden for immutable types."
+                    ],
+                    "getters": [
+                        "cls.__new__(cls, ...)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __new__(cls):\n        print('creating instance')\n        return super().__new__(cls)\n\nA()",
+                            "result": "prints 'creating instance'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__init__",
+                    "name": "__init__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__init__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, ...], None]",
+                    "desc": "Initializes a newly created instance.",
+                    "point": [
+                        "Called immediately after __new__.",
+                        "Should configure the object's state.",
+                        "Must return None."
+                    ],
+                    "getters": [
+                        "obj.__init__(...)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __init__(self, x):\n        self.x = x\n\nA(10)",
+                            "result": "instance with x = 10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__init_subclass__",
+                    "name": "__init_subclass__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__init_subclass__",
+                    "kind": "method",
+                    "value_type": "Callable[[type[Self], ...], None]",
+                    "desc": "Called when a class is subclassed.",
+                    "point": [
+                        "Executed during subclass creation.",
+                        "Often used to enforce subclass constraints or register subclasses."
+                    ],
+                    "getters": [
+                        "BaseClass.__init_subclass__(...)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Base:\n    def __init_subclass__(cls):\n        print('new subclass:', cls.__name__)\n\nclass A(Base):\n    pass",
+                            "result": "prints 'new subclass: A'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__class_getitem__",
+                    "name": "__class_getitem__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__class_getitem__",
+                    "kind": "method",
+                    "value_type": "Callable[[type[Self], Any], Any]",
+                    "desc": "Handles subscription on classes.",
+                    "point": [
+                        "Used when evaluating Class[T].",
+                        "Commonly implemented by typing and generic libraries."
+                    ],
+                    "getters": [
+                        "Class[T]"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __class_getitem__(cls, item):\n        return (cls, item)\n\nA[int]",
+                            "result": "(A, int)",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__mro_entries__",
+                    "name": "__mro_entries__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__mro_entries__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, tuple[type, ...]], tuple[type, ...]]",
+                    "desc": "Allows objects in class inheritance lists to customize the resulting MRO.",
+                    "point": [
+                        "Used during class creation when resolving base classes.",
+                        "Primarily used by typing.Generic and advanced metaprogramming."
+                    ],
+                    "getters": [
+                        "class C(BaseObject): ..."
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Proxy:\n    def __mro_entries__(self, bases):\n        return (dict,)\n\nclass A(Proxy()):\n    pass",
+                            "result": "A inherits from dict",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__bases__",
+                    "name": "__bases__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#type.__bases__",
+                    "kind": "attribute",
+                    "value_type": "tuple[type, ...]",
+                    "desc": "Tuple containing the base classes of a class.",
+                    "point": [
+                        "Defines the direct inheritance of the class."
+                    ],
+                    "getters": [
+                        "Class.__bases__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A: pass\nclass B(A): pass\n\nB.__bases__",
+                            "result": "(A,)",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__mro__",
+                    "name": "__mro__",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#type.__mro__",
+                    "kind": "attribute",
+                    "value_type": "tuple[type, ...]",
+                    "desc": "Method Resolution Order for the class.",
+                    "point": [
+                        "Defines the order Python searches for attributes.",
+                        "Computed using the C3 linearization algorithm."
+                    ],
+                    "getters": [
+                        "Class.__mro__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A: pass\nclass B(A): pass\n\nB.__mro__",
+                            "result": "(B, A, object)",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "type",
+                    "name": "type(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#type",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], type]",
+                    "desc": "Return the type of an object.",
+                    "point": [
+                        "Used to inspect the runtime type of objects.",
+                        "Also acts as the metaclass for most Python classes."
+                    ],
+                    "getters": [
+                        "type(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "type(5)",
+                            "result": "<class 'int'>",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-object-lifecycle",
+            "name": "Memory / Object Lifecycle",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__del__",
+            "desc": "Mechanisms related to the lifetime and destruction of objects.",
+            "point": [
+                "These hooks control what happens when an object is about to be destroyed.",
+                "They interact with Python's garbage collector.",
+                "They should generally be avoided unless strictly necessary."
+            ],
+            "blocks": [
+                {
+                    "id": "__del__",
+                    "name": "__del__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__del__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], None]",
+                    "desc": "Called when an object is about to be destroyed.",
+                    "point": [
+                        "Acts as a finalizer.",
+                        "Triggered when the object is garbage collected.",
+                        "Execution timing is not guaranteed."
+                    ],
+                    "getters": [
+                        "obj.__del__()"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __del__(self):\n        print('object destroyed')\n\na = A()\ndel a",
+                            "result": "prints 'object destroyed' (eventually)",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "del",
+                    "name": "del",
+                    "link": "https://docs.python.org/3/reference/simple_stmts.html#the-del-statement",
+                    "kind": "keyword",
+                    "value_type": "statement",
+                    "desc": "Remove a reference to an object.",
+                    "point": [
+                        "Deletes a variable binding.",
+                        "Does not necessarily destroy the object.",
+                        "The object is destroyed only when its reference count reaches zero."
+                    ],
+                    "getters": [
+                        "del obj"
+                    ],
+                    "examples": [
+                        {
+                            "code": "x = [1,2,3]\ndel x",
+                            "result": "variable x removed",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "gc",
+                    "name": "gc module",
+                    "link": "https://docs.python.org/3/library/gc.html",
+                    "kind": "standard-library",
+                    "value_type": "module",
+                    "desc": "Interface to Python's garbage collector.",
+                    "point": [
+                        "Provides control over cyclic garbage collection.",
+                        "Useful for debugging memory behavior."
+                    ],
+                    "getters": [
+                        "gc.collect()"
+                    ],
+                    "examples": [
+                        {
+                            "code": "import gc\ngc.collect()",
+                            "result": "forces garbage collection",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-descriptor-protocol",
+            "name": "Descriptor Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#descriptors",
+            "desc": "Mechanism allowing objects stored on classes to control attribute access on instances.",
+            "point": [
+                "Descriptors customize attribute access for class attributes.",
+                "They are heavily used by Python's object model.",
+                "Functions, properties, and methods are implemented using descriptors."
+            ],
+            "blocks": [
+                {
+                    "id": "__get__",
+                    "name": "__get__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__get__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object | None, type | None], Any]",
+                    "desc": "Retrieve the value of a descriptor.",
+                    "point": [
+                        "Called when accessing a descriptor attribute.",
+                        "instance is the instance accessing the attribute.",
+                        "owner is the class where the descriptor is defined."
+                    ],
+                    "getters": [
+                        "descriptor.__get__(instance, owner)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Descriptor:\n    def __get__(self, instance, owner):\n        return 'value'\n\nclass A:\n    x = Descriptor()\n\nA().x",
+                            "result": "'value'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__set__",
+                    "name": "__set__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__set__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object, Any], None]",
+                    "desc": "Set the value of a descriptor attribute.",
+                    "point": [
+                        "Called when assigning to the descriptor.",
+                        "Defines a data descriptor when present."
+                    ],
+                    "getters": [
+                        "descriptor.__set__(instance, value)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Descriptor:\n    def __set__(self, instance, value):\n        print('setting', value)\n\nclass A:\n    x = Descriptor()\n\na = A()\na.x = 10",
+                            "result": "prints 'setting 10'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__delete__",
+                    "name": "__delete__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__delete__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], None]",
+                    "desc": "Delete the descriptor value from an instance.",
+                    "point": [
+                        "Called when deleting a descriptor attribute.",
+                        "Used less frequently but completes the data descriptor interface."
+                    ],
+                    "getters": [
+                        "descriptor.__delete__(instance)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Descriptor:\n    def __delete__(self, instance):\n        print('deleted')\n\nclass A:\n    x = Descriptor()\n\na = A()\ndel a.x",
+                            "result": "prints 'deleted'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__set_name__",
+                    "name": "__set_name__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__set_name__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, type, str], None]",
+                    "desc": "Called when the descriptor is assigned to a class attribute.",
+                    "point": [
+                        "Executed during class creation.",
+                        "Allows the descriptor to know its attribute name."
+                    ],
+                    "getters": [
+                        "descriptor.__set_name__(owner, name)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Descriptor:\n    def __set_name__(self, owner, name):\n        print(name)\n\nclass A:\n    x = Descriptor()",
+                            "result": "prints 'x'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "property",
+                    "name": "property(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#property",
+                    "kind": "builtin-class",
+                    "value_type": "Callable[[Callable[[Self], Any] | None, Callable[[Self, Any], None] | None, Callable[[Self], None] | None], property]",
+                    "desc": "Create a managed attribute using the descriptor protocol.",
+                    "point": [
+                        "Implements __get__, __set__, and __delete__ internally.",
+                        "Commonly used to control attribute access."
+                    ],
+                    "getters": [
+                        "property(fget)",
+                        "property(fget, fset, fdel)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __init__(self):\n        self._x = 10\n\n    @property\n    def x(self):\n        return self._x\n\nA().x",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "classmethod",
+                    "name": "classmethod(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#classmethod",
+                    "kind": "builtin-class",
+                    "value_type": "Callable[[Callable[..., Any]], classmethod]",
+                    "desc": "Convert a function into a class method.",
+                    "point": [
+                        "Uses the descriptor protocol to bind the class instead of the instance."
+                    ],
+                    "getters": [
+                        "@classmethod"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    x = 10\n\n    @classmethod\n    def show(cls):\n        return cls.x\n\nA.show()",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "staticmethod",
+                    "name": "staticmethod(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#staticmethod",
+                    "kind": "builtin-class",
+                    "value_type": "Callable[[Callable[..., Any]], staticmethod]",
+                    "desc": "Convert a function into a static method.",
+                    "point": [
+                        "Uses the descriptor protocol but does not bind instance or class."
+                    ],
+                    "getters": [
+                        "@staticmethod"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    @staticmethod\n    def hello():\n        return 'hi'\n\nA.hello()",
+                            "result": "'hi'",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-representation",
+            "name": "Representation / Stringification",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__repr__",
+            "desc": "Methods controlling how objects convert to strings or other representations.",
+            "point": [
+                "These methods define how objects are displayed or formatted.",
+                "__repr__ is intended for developers and debugging.",
+                "__str__ is intended for end-user readable output."
+            ],
+            "blocks": [
+                {
+                    "id": "__repr__",
+                    "name": "__repr__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__repr__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], str]",
+                    "desc": "Return the official string representation of the object.",
+                    "point": [
+                        "Used for debugging and development.",
+                        "Should ideally return a string that could recreate the object.",
+                        "Fallback used by str() if __str__ is not defined."
+                    ],
+                    "getters": [
+                        "repr(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __repr__(self):\n        return 'A()'\n\nrepr(A())",
+                            "result": "'A()'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__str__",
+                    "name": "__str__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__str__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], str]",
+                    "desc": "Return a human-readable string representation.",
+                    "point": [
+                        "Used by print() and str().",
+                        "Intended for user-friendly display.",
+                        "Falls back to __repr__ if not defined."
+                    ],
+                    "getters": [
+                        "str(obj)",
+                        "print(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __str__(self):\n        return 'hello'\n\nprint(A())",
+                            "result": "hello",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__format__",
+                    "name": "__format__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__format__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, str], str]",
+                    "desc": "Customize formatting using the format specification mini-language.",
+                    "point": [
+                        "Called by format().",
+                        "Used by f-strings.",
+                        "Receives the format specification string."
+                    ],
+                    "getters": [
+                        "format(obj, spec)",
+                        "f\"{obj:spec}\""
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __format__(self, spec):\n        return f'formatted({spec})'\n\nf\"{A():x}\"",
+                            "result": "formatted(x)",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__bytes__",
+                    "name": "__bytes__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__bytes__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], bytes]",
+                    "desc": "Return a byte-string representation of the object.",
+                    "point": [
+                        "Called by the built-in bytes().",
+                        "Used for binary representations."
+                    ],
+                    "getters": [
+                        "bytes(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __bytes__(self):\n        return b'abc'\n\nbytes(A())",
+                            "result": "b'abc'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "repr",
+                    "name": "repr(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#repr",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], str]",
+                    "desc": "Return the canonical string representation of an object.",
+                    "point": [
+                        "Calls obj.__repr__()."
+                    ],
+                    "getters": [
+                        "repr(obj)"
+                    ]
+                },
+                {
+                    "id": "str",
+                    "name": "str(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#func-str",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], str]",
+                    "desc": "Return a readable string representation of an object.",
+                    "point": [
+                        "Calls obj.__str__() if available.",
+                        "Otherwise falls back to __repr__."
+                    ],
+                    "getters": [
+                        "str(obj)"
+                    ]
+                },
+                {
+                    "id": "format",
+                    "name": "format(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#format",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, str], str]",
+                    "desc": "Format an object using the format specification mini-language.",
+                    "point": [
+                        "Calls obj.__format__(spec)."
+                    ],
+                    "getters": [
+                        "format(obj, spec)"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-comparison-protocol",
+            "name": "Comparison Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__lt__",
+            "desc": "Methods controlling comparison behavior between objects.",
+            "point": [
+                "These methods implement Python's rich comparison protocol.",
+                "Each comparison operator maps to a specific dunder method.",
+                "Methods should return True, False, or NotImplemented.",
+                "If NotImplemented is returned, Python may attempt the reflected comparison."
+            ],
+            "blocks": [
+                {
+                    "id": "__eq__",
+                    "name": "__eq__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__eq__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Equality comparison.",
+                    "point": [
+                        "Implements the == operator.",
+                        "Should return NotImplemented for unsupported types."
+                    ],
+                    "getters": [
+                        "a == b"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __eq__(self, other):\n        return True\n\nA() == 5",
+                            "result": "True",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__ne__",
+                    "name": "__ne__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__ne__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Inequality comparison.",
+                    "point": [
+                        "Implements the != operator.",
+                        "By default Python uses the inverse of __eq__ if not defined."
+                    ],
+                    "getters": [
+                        "a != b"
+                    ]
+                },
+                {
+                    "id": "__lt__",
+                    "name": "__lt__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__lt__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Less-than comparison.",
+                    "point": [
+                        "Implements the < operator."
+                    ],
+                    "getters": [
+                        "a < b"
+                    ]
+                },
+                {
+                    "id": "__le__",
+                    "name": "__le__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__le__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Less-than-or-equal comparison.",
+                    "point": [
+                        "Implements the <= operator."
+                    ],
+                    "getters": [
+                        "a <= b"
+                    ]
+                },
+                {
+                    "id": "__gt__",
+                    "name": "__gt__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__gt__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Greater-than comparison.",
+                    "point": [
+                        "Implements the > operator."
+                    ],
+                    "getters": [
+                        "a > b"
+                    ]
+                },
+                {
+                    "id": "__ge__",
+                    "name": "__ge__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__ge__",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, object], bool | NotImplemented]",
+                    "desc": "Greater-than-or-equal comparison.",
+                    "point": [
+                        "Implements the >= operator."
+                    ],
+                    "getters": [
+                        "a >= b"
+                    ]
+                },
+                {
+                    "id": "functools-total-ordering",
+                    "name": "functools.total_ordering(...)",
+                    "link": "https://docs.python.org/3/library/functools.html#functools.total_ordering",
+                    "kind": "decorator",
+                    "value_type": "Callable[[type], type]",
+                    "desc": "Generate missing comparison methods automatically.",
+                    "point": [
+                        "Requires at least __eq__ and one ordering method.",
+                        "Automatically fills the remaining comparison methods."
+                    ],
+                    "getters": [
+                        "@functools.total_ordering"
+                    ],
+                    "examples": [
+                        {
+                            "code": "from functools import total_ordering\n\n@total_ordering\nclass A:\n    def __eq__(self, other):\n        return True\n\n    def __lt__(self, other):\n        return False",
+                            "result": "remaining comparison methods auto-generated",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "NotImplemented",
+                    "name": "NotImplemented",
+                    "link": "https://docs.python.org/3/library/constants.html#NotImplemented",
+                    "kind": "constant",
+                    "value_type": "NotImplementedType",
+                    "desc": "Special return value indicating that an operation is not implemented for the given operands.",
+                    "point": [
+                        "Used by binary operator methods such as __eq__, __add__, etc.",
+                        "Signals to Python that the operation should be attempted using the reflected method.",
+                        "Should be returned instead of raising an exception when an operation is unsupported."
+                    ],
+                    "getters": [
+                        "return NotImplemented"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __eq__(self, other):\n        if not isinstance(other, A):\n            return NotImplemented\n        return True",
+                            "result": "allows Python to try the reflected comparison",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-numeric-operators",
+            "name": "Numeric / Operator Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types",
+            "desc": "Methods allowing objects to emulate numeric and operator behavior.",
+            "point": [
+                "Python operators are implemented through special methods.",
+                "Binary operators often exist in three forms: normal, reflected, and in-place.",
+                "Unary operators use a separate protocol."
+            ],
+            "subcategories": [
+                {
+                    "id": "operator-patterns",
+                    "name": "Operator Patterns",
+                    "desc": "General behavior shared by binary operators.",
+                    "blocks": [
+                        {
+                            "id": "operator-pattern-normal",
+                            "name": "Binary Operator Pattern",
+                            "kind": "concept",
+                            "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                            "desc": "Standard implementation of a binary operator.",
+                            "point": [
+                                "Called when the object appears on the left side of the operator.",
+                                "Should return NotImplemented when the other operand type is unsupported."
+                            ],
+                            "getters": [],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __add__(self, other):\n        return 'add'",
+                                    "result": "A() + 1 calls __add__",
+                                    "link": ""
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-pattern-reflected",
+                            "name": "Reflected Operator Pattern",
+                            "kind": "concept",
+                            "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                            "desc": "Fallback operator when the left operand does not support the operation.",
+                            "point": [
+                                "Called when the left operand returns NotImplemented.",
+                                "Allows the right operand to implement the operation."
+                            ],
+                            "getters": [],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __radd__(self, other):\n        return 'reflected'",
+                                    "result": "1 + A() calls __radd__",
+                                    "link": ""
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-pattern-inplace",
+                            "name": "In-place Operator Pattern",
+                            "kind": "concept",
+                            "value_type": "Callable[[Self, object], Self | Any]",
+                            "desc": "Operator used for augmented assignment.",
+                            "point": [
+                                "Called by operators such as += or *=.",
+                                "May mutate the object in place.",
+                                "If not implemented, Python falls back to normal operator behavior."
+                            ],
+                            "getters": [],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __iadd__(self, other):\n        return self",
+                                    "result": "a += b calls __iadd__",
+                                    "link": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "arithmetic-operators",
+                    "name": "Arithmetic Operators",
+                    "desc": "Arithmetic binary operator families.",
+                    "subcategories": [
+                        {
+                            "id": "operator-add",
+                            "name": "Addition (+)",
+                            "desc": "Addition operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__add__",
+                                    "name": "__add__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the + operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a + b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__radd__",
+                                    "name": "__radd__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected +.",
+                                    "point": [],
+                                    "getters": [
+                                        "b + a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__iadd__",
+                                    "name": "__iadd__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place +.",
+                                    "point": [],
+                                    "getters": [
+                                        "a += b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-sub",
+                            "name": "Subtraction (-)",
+                            "desc": "Subtraction operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__sub__",
+                                    "name": "__sub__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the - operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a - b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rsub__",
+                                    "name": "__rsub__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected -.",
+                                    "point": [],
+                                    "getters": [
+                                        "b - a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__isub__",
+                                    "name": "__isub__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place -.",
+                                    "point": [],
+                                    "getters": [
+                                        "a -= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-mul",
+                            "name": "Multiplication (*)",
+                            "desc": "Multiplication operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__mul__",
+                                    "name": "__mul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the * operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a * b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rmul__",
+                                    "name": "__rmul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected *.",
+                                    "point": [],
+                                    "getters": [
+                                        "b * a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__imul__",
+                                    "name": "__imul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place *.",
+                                    "point": [],
+                                    "getters": [
+                                        "a *= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-matmul",
+                            "name": "Matrix multiplication (@)",
+                            "desc": "Matrix multiplication operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__matmul__",
+                                    "name": "__matmul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the @ operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a @ b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rmatmul__",
+                                    "name": "__rmatmul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected @.",
+                                    "point": [],
+                                    "getters": [
+                                        "b @ a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__imatmul__",
+                                    "name": "__imatmul__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place @.",
+                                    "point": [],
+                                    "getters": [
+                                        "a @= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-truediv",
+                            "name": "True division (/)",
+                            "desc": "True division operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__truediv__",
+                                    "name": "__truediv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the / operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a / b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rtruediv__",
+                                    "name": "__rtruediv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected /.",
+                                    "point": [],
+                                    "getters": [
+                                        "b / a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__itruediv__",
+                                    "name": "__itruediv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place /.",
+                                    "point": [],
+                                    "getters": [
+                                        "a /= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-floordiv",
+                            "name": "Floor division (//)",
+                            "desc": "Floor division operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__floordiv__",
+                                    "name": "__floordiv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the // operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a // b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rfloordiv__",
+                                    "name": "__rfloordiv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected //.",
+                                    "point": [],
+                                    "getters": [
+                                        "b // a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ifloordiv__",
+                                    "name": "__ifloordiv__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place //.",
+                                    "point": [],
+                                    "getters": [
+                                        "a //= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-mod",
+                            "name": "Modulo (%)",
+                            "desc": "Modulo operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__mod__",
+                                    "name": "__mod__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the % operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a % b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rmod__",
+                                    "name": "__rmod__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected %.",
+                                    "point": [],
+                                    "getters": [
+                                        "b % a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__imod__",
+                                    "name": "__imod__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place %.",
+                                    "point": [],
+                                    "getters": [
+                                        "a %= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-pow",
+                            "name": "Power (**)",
+                            "desc": "Power operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__pow__",
+                                    "name": "__pow__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the ** operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a ** b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rpow__",
+                                    "name": "__rpow__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected **.",
+                                    "point": [],
+                                    "getters": [
+                                        "b ** a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ipow__",
+                                    "name": "__ipow__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place **.",
+                                    "point": [],
+                                    "getters": [
+                                        "a **= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "operator-divmod",
+                    "name": "Divmod (divmod)",
+                    "desc": "Divmod operator family.",
+                    "blocks": [
+                        {
+                            "id": "__divmod__",
+                            "name": "__divmod__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, object], tuple[Any, Any] | NotImplementedType]",
+                            "desc": "Implement divmod(a, b).",
+                            "getters": [
+                                "divmod(a, b)"
+                            ]
+                        },
+                        {
+                            "id": "__rdivmod__",
+                            "name": "__rdivmod__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, object], tuple[Any, Any] | NotImplementedType]",
+                            "desc": "Implement reflected divmod.",
+                            "getters": [
+                                "divmod(b, a)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "bitwise-operators",
+                    "name": "Bitwise Operators",
+                    "desc": "Bitwise and shift operator families.",
+                    "subcategories": [
+                        {
+                            "id": "operator-and",
+                            "name": "AND (&)",
+                            "desc": "AND operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__and__",
+                                    "name": "__and__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the & operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a & b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rand__",
+                                    "name": "__rand__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected &.",
+                                    "point": [],
+                                    "getters": [
+                                        "b & a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__iand__",
+                                    "name": "__iand__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place &.",
+                                    "point": [],
+                                    "getters": [
+                                        "a &= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-or",
+                            "name": "OR (|)",
+                            "desc": "OR operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__or__",
+                                    "name": "__or__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the | operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a | b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ror__",
+                                    "name": "__ror__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected |.",
+                                    "point": [],
+                                    "getters": [
+                                        "b | a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ior__",
+                                    "name": "__ior__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place |.",
+                                    "point": [],
+                                    "getters": [
+                                        "a |= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-xor",
+                            "name": "XOR (^)",
+                            "desc": "XOR operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__xor__",
+                                    "name": "__xor__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the ^ operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a ^ b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rxor__",
+                                    "name": "__rxor__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected ^.",
+                                    "point": [],
+                                    "getters": [
+                                        "b ^ a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ixor__",
+                                    "name": "__ixor__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place ^.",
+                                    "point": [],
+                                    "getters": [
+                                        "a ^= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-lshift",
+                            "name": "Left shift (<<)",
+                            "desc": "Left shift operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__lshift__",
+                                    "name": "__lshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the << operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a << b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rlshift__",
+                                    "name": "__rlshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected <<.",
+                                    "point": [],
+                                    "getters": [
+                                        "b << a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__ilshift__",
+                                    "name": "__ilshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place <<.",
+                                    "point": [],
+                                    "getters": [
+                                        "a <<= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-rshift",
+                            "name": "Right shift (>>)",
+                            "desc": "Right shift operator family.",
+                            "blocks": [
+                                {
+                                    "id": "__rshift__",
+                                    "name": "__rshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement the >> operator.",
+                                    "point": [],
+                                    "getters": [
+                                        "a >> b"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__rrshift__",
+                                    "name": "__rrshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Any | NotImplementedType]",
+                                    "desc": "Implement reflected >>.",
+                                    "point": [],
+                                    "getters": [
+                                        "b >> a"
+                                    ],
+                                    "examples": []
+                                },
+                                {
+                                    "id": "__irshift__",
+                                    "name": "__irshift__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self, object], Self | Any]",
+                                    "desc": "Implement in-place >>.",
+                                    "point": [],
+                                    "getters": [
+                                        "a >>= b"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "unary-operators",
+                    "name": "Unary Operators",
+                    "desc": "Unary numeric operator families.",
+                    "subcategories": [
+                        {
+                            "id": "operator-neg",
+                            "name": "Negation (-)",
+                            "desc": "Negation unary operator.",
+                            "blocks": [
+                                {
+                                    "id": "__neg__",
+                                    "name": "__neg__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self], Any]",
+                                    "desc": "Implement unary negation.",
+                                    "point": [],
+                                    "getters": [
+                                        "-x"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-pos",
+                            "name": "Positive (+)",
+                            "desc": "Positive unary operator.",
+                            "blocks": [
+                                {
+                                    "id": "__pos__",
+                                    "name": "__pos__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self], Any]",
+                                    "desc": "Implement unary positive.",
+                                    "point": [],
+                                    "getters": [
+                                        "+x"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-abs",
+                            "name": "Absolute (abs(x))",
+                            "desc": "Absolute unary operator.",
+                            "blocks": [
+                                {
+                                    "id": "__abs__",
+                                    "name": "__abs__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self], Any]",
+                                    "desc": "Implement unary absolute.",
+                                    "point": [],
+                                    "getters": [
+                                        "abs(x)"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "operator-invert",
+                            "name": "Bitwise invert (~)",
+                            "desc": "Bitwise invert unary operator.",
+                            "blocks": [
+                                {
+                                    "id": "__invert__",
+                                    "name": "__invert__(...)",
+                                    "kind": "method",
+                                    "value_type": "Callable[[Self], Any]",
+                                    "desc": "Implement unary bitwise invert.",
+                                    "point": [],
+                                    "getters": [
+                                        "~x"
+                                    ],
+                                    "examples": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-container-protocol",
+            "name": "Container / Collection Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#emulating-container-types",
+            "desc": "Methods allowing objects to behave like containers or collections.",
+            "point": [
+                "These methods define how objects expose their elements.",
+                "They enable iteration, membership checks, indexing, and length queries."
+            ],
+            "subcategories": [
+                {
+                    "id": "container-len",
+                    "name": "Length",
+                    "blocks": [
+                        {
+                            "id": "__len__",
+                            "name": "__len__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Return the number of items in the container.",
+                            "point": [
+                                "Must return a non-negative integer.",
+                                "Used by many Python operations."
+                            ],
+                            "getters": [
+                                "obj.__len__()"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "len",
+                            "name": "len(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Return the number of elements in a container.",
+                            "point": [
+                                "Calls obj.__len__()."
+                            ],
+                            "getters": [
+                                "len(obj)"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-contains",
+                    "name": "Membership",
+                    "blocks": [
+                        {
+                            "id": "__contains__",
+                            "name": "__contains__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, object], bool]",
+                            "desc": "Check whether an element exists in the container.",
+                            "point": [
+                                "Implements the membership test operator.",
+                                "Should return True or False."
+                            ],
+                            "getters": [
+                                "container.__contains__(item)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "operator-in",
+                            "name": "a in b",
+                            "kind": "operator",
+                            "value_type": "bool",
+                            "desc": "Test membership in a container.",
+                            "point": [
+                                "Calls b.__contains__(a).",
+                                "If missing, Python falls back to iteration."
+                            ],
+                            "getters": [
+                                "a in b"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-iteration",
+                    "name": "Iteration",
+                    "blocks": [
+                        {
+                            "id": "__iter__",
+                            "name": "__iter__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Iterator]",
+                            "desc": "Return an iterator over the container.",
+                            "point": [
+                                "Used by for-loops and many built-in functions.",
+                                "The returned object must implement __next__."
+                            ],
+                            "getters": [
+                                "obj.__iter__()"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "for-loop",
+                            "name": "for x in container",
+                            "kind": "syntax",
+                            "value_type": "iteration",
+                            "desc": "Iterate over elements of a container.",
+                            "point": [
+                                "Calls iter(container).",
+                                "Then repeatedly calls __next__ on the iterator."
+                            ],
+                            "getters": [
+                                "for x in container"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-getitem",
+                    "name": "Indexing",
+                    "blocks": [
+                        {
+                            "id": "__getitem__",
+                            "name": "__getitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], Any]",
+                            "desc": "Retrieve an element using an index or key.",
+                            "point": [
+                                "Used for indexing operations.",
+                                "Often implemented by sequences and mappings."
+                            ],
+                            "getters": [
+                                "container.__getitem__(key)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "index-operator",
+                            "name": "container[key]",
+                            "kind": "operator",
+                            "value_type": "Any",
+                            "desc": "Access an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__getitem__(key)."
+                            ],
+                            "getters": [
+                                "container[key]"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-setitem",
+                    "name": "Assignment",
+                    "blocks": [
+                        {
+                            "id": "__setitem__",
+                            "name": "__setitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any, Any], None]",
+                            "desc": "Assign a value to an index or key.",
+                            "point": [
+                                "Implements indexed assignment.",
+                                "Commonly used by mutable sequences and mappings."
+                            ],
+                            "getters": [
+                                "container[key] = value"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "setitem-operator",
+                            "name": "container[key] = value",
+                            "kind": "operator",
+                            "value_type": "assignment",
+                            "desc": "Assign an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__setitem__(key, value)."
+                            ],
+                            "getters": [
+                                "container[key] = value"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-delitem",
+                    "name": "Deletion",
+                    "blocks": [
+                        {
+                            "id": "__delitem__",
+                            "name": "__delitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], None]",
+                            "desc": "Delete an element from the container.",
+                            "point": [
+                                "Implements deletion of indexed or keyed elements."
+                            ],
+                            "getters": [
+                                "del container[key]"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "delitem-operator",
+                            "name": "del container[key]",
+                            "kind": "operator",
+                            "value_type": "deletion",
+                            "desc": "Delete an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__delitem__(key)."
+                            ],
+                            "getters": [
+                                "del container[key]"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-reversed",
+                    "name": "Reverse Iteration",
+                    "blocks": [
+                        {
+                            "id": "__reversed__",
+                            "name": "__reversed__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Iterator]",
+                            "desc": "Return an iterator yielding elements in reverse order.",
+                            "point": [
+                                "Called by reversed(obj).",
+                                "If missing, Python may fall back to __len__ and __getitem__."
+                            ],
+                            "getters": [
+                                "reversed(container)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "reversed",
+                            "name": "reversed(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], Iterator]",
+                            "desc": "Return a reverse iterator over a container.",
+                            "point": [
+                                "Calls obj.__reversed__() if available."
+                            ],
+                            "getters": [
+                                "reversed(obj)"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-callable-protocol",
+            "name": "Callable Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__call__",
+            "desc": "Methods allowing objects to behave like functions.",
+            "point": [
+                "Objects implementing __call__ can be invoked like functions.",
+                "The call syntax obj(...) is translated into obj.__call__(...).",
+                "Commonly used for functors, decorators, and callable classes."
+            ],
+            "blocks": [
+                {
+                    "id": "__call__",
+                    "name": "__call__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, ...], Any]",
+                    "desc": "Invoke the object as a callable.",
+                    "point": [
+                        "Executed when the object is called like a function.",
+                        "Receives the same arguments passed to the call."
+                    ],
+                    "getters": [
+                        "obj.__call__(...)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __call__(self, x):\n        return x * 2\n\na = A()\na(5)",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "callable-operator",
+                    "name": "obj(...)",
+                    "kind": "operator",
+                    "value_type": "Any",
+                    "desc": "Call an object using function-call syntax.",
+                    "point": [
+                        "Translated internally to obj.__call__(...)."
+                    ],
+                    "getters": [
+                        "obj(...)"
+                    ],
+                    "examples": []
+                },
+                {
+                    "id": "callable",
+                    "name": "callable(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], bool]",
+                    "desc": "Check whether an object is callable.",
+                    "point": [
+                        "Returns True if the object implements __call__ or is a callable type."
+                    ],
+                    "getters": [
+                        "callable(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __call__(self):\n        pass\n\ncallable(A())",
+                            "result": "True",
                             "link": ""
                         }
                     ]
