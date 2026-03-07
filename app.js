@@ -11,6 +11,15 @@ async function loadData() {
    Rendering helpers
 ========================= */
 
+function escapeHTML(str) {
+    return str
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
 function renderBlock(block) {
 
     const el = document.createElement("article");
@@ -20,34 +29,31 @@ function renderBlock(block) {
     const gettersHTML = (block.getters || [])
         .map(g => {
             if (typeof g === "string") {
-                return `<code>${g}</code>`;
+                return `<code>${escapeHTML(g)}</code>`;
             }
-            return `<code>${g.value}</code>`;
+            return `<code>${escapeHTML(g.value)}</code>`;
         })
         .join("");
 
     const pointsHTML = (block.point || [])
-        .map(p => `<li>${p}</li>`)
+        .map(p => `<li>${escapeHTML(p)}</li>`)
         .join("");
 
     const examplesHTML = (block.examples || [])
         .map(e => `
-        <div class="examples">
-            <pre><code>${e.code}</code></pre>
-            <div class="result">${e.result}</div>
-        </div>
+            <pre class="example"><code>${escapeHTML(e.code)}</code> → <span class="result">${escapeHTML(e.result)}</span></pre>
         `)
         .join("");
 
     el.innerHTML = `
-        <h3 class="dunder-name">${block.name}</h3>
+        <h3 class="dunder-name">${escapeHTML(block.name)}</h3>
 
         <div class="meta">
-            <span class="kind">${block.kind} of type</span>
-            <span class="type"><code>${block.value_type}</code></span>
+            <span class="kind">${escapeHTML(block.kind)} of type</span>
+            <span class="type"><code>${escapeHTML(block.value_type)}</code></span>
         </div>
 
-        <p>${block.desc}</p>
+        <p>${escapeHTML(block.desc)}</p>
 
         <ul class="points">
             ${pointsHTML}
@@ -72,8 +78,8 @@ function renderCategory(category) {
 
     section.innerHTML = `
         <header class="gallery-header">
-            <h2>${category.name}</h2>
-            <p>${category.desc}</p>
+            <h2>${escapeHTML(category.name)}</h2>
+            <p>${escapeHTML(category.desc)}</p>
         </header>
 
         <div class="gallery-grid"></div>
