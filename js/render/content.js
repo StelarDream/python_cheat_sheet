@@ -1,6 +1,8 @@
 import { state } from "../state.js";
 import { renderBlock } from "./block.js";
 import { normalizeGetter } from "../utils/getters.js";
+import { toggleCollapse, expandCategory } from "../ui/collapse.js";
+import { focusContentCategory } from "../ui/focus.js";
 
 export function renderContentCategory(cat, parent, depth = 0) {
 
@@ -17,9 +19,32 @@ export function renderContentCategory(cat, parent, depth = 0) {
     const header = document.createElement("div");
     header.className = "gallery-header";
 
-    const title = document.createElement("h2");
+    const titleRow = document.createElement("div");
+    titleRow.className = "gallery-title-row";
+
+    const collapseBtn = document.createElement("button");
+    collapseBtn.className = "collapse-btn content-collapse-btn";
+    collapseBtn.type = "button";
+    collapseBtn.textContent = state.collapsed.has(cat.id) ? "+" : "−";
+    collapseBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        toggleCollapse(cat.id);
+    });
+    titleRow.appendChild(collapseBtn);
+
+    const title = document.createElement("button");
+    title.type = "button";
+    title.className = "gallery-title";
     title.textContent = cat.name;
-    header.appendChild(title);
+    title.addEventListener("click", () => {
+        if (state.collapsed.has(cat.id)) {
+            expandCategory(cat.id);
+            return;
+        }
+
+        focusContentCategory(cat.id);
+    });
+    titleRow.appendChild(title);
 
     if (cat.link) {
         const docsLink = document.createElement("a");
@@ -28,8 +53,18 @@ export function renderContentCategory(cat, parent, depth = 0) {
         docsLink.rel = "noopener noreferrer";
         docsLink.className = "gallery-doc-link";
         docsLink.textContent = "docs ↗";
-        header.appendChild(docsLink);
+        docsLink.addEventListener("click", e => {
+            e.stopPropagation();
+            if (state.collapsed.has(cat.id)) {
+                expandCategory(cat.id);
+            } else {
+                focusContentCategory(cat.id);
+            }
+        });
+        titleRow.appendChild(docsLink);
     }
+
+    header.appendChild(titleRow);
 
     if (cat.desc) {
         const desc = document.createElement("p");

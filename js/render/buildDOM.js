@@ -41,7 +41,7 @@ function initializeCollapsed(categories, depth = 0) {
 
     for (const cat of categories) {
 
-        if (depth >= 1) {
+        if (depth >= 2) {
             state.collapsed.add(cat.id);
         }
 

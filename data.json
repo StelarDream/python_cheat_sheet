@@ -210,6 +210,307 @@
             ]
         },
         {
+            "id": "python-class-basics",
+            "name": "Class Basics / Construction",
+            "link": "https://docs.python.org/3/reference/datamodel.html#customizing-instance-and-subclass-creation",
+            "desc": "Mechanisms controlling how classes create instances and how subclasses are initialized.",
+            "point": [
+                "These methods control instance creation and class behaviour.",
+                "They are executed during object construction or subclass definition.",
+                "They form the foundation of Python's class system."
+            ],
+            "blocks": [],
+            "subcategories": [
+                {
+                    "id": "instance-construction",
+                    "name": "Instance Construction",
+                    "blocks": [
+                        {
+                            "id": "__new__",
+                            "name": "__new__(...)",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#object.__new__",
+                            "kind": "method",
+                            "value_type": "Callable[[type[Self], ...], Self]",
+                            "desc": "Creates and returns a new instance of the class.",
+                            "point": [
+                                "Executed before __init__.",
+                                "Responsible for allocating the instance.",
+                                "Commonly overridden for immutable types."
+                            ],
+                            "getters": [
+                                "cls.__new__(cls, ...)"
+                            ]
+                        },
+                        {
+                            "id": "__init__",
+                            "name": "__init__(...)",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#object.__init__",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, ...], None]",
+                            "desc": "Initializes a newly created instance.",
+                            "point": [
+                                "Called immediately after __new__.",
+                                "Should configure the object's state.",
+                                "Must return None."
+                            ],
+                            "getters": [
+                                "obj.__init__(...)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "class-inheritance",
+                    "name": "Subclass Construction",
+                    "blocks": [
+                        {
+                            "id": "__init_subclass__",
+                            "name": "__init_subclass__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[type[Self], ...], None]",
+                            "desc": "Customize class creation when a class is subclassed.",
+                            "point": [
+                                "Called automatically when a class is subclassed.",
+                                "Allows base classes to configure or validate subclasses."
+                            ],
+                            "getters": [
+                                "Base.__init_subclass__(...)"
+                            ]
+                        },
+                        {
+                            "id": "__mro_entries__",
+                            "name": "__mro_entries__(...)",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#object.__mro_entries__",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, tuple[type, ...]], tuple[type, ...]]",
+                            "desc": "Customize how objects in a class inheritance list affect the final MRO.",
+                            "point": [
+                                "Used during class creation when resolving base classes."
+                            ],
+                            "getters": [
+                                "class C(BaseObject): ..."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "metaclass-construction",
+                    "name": "Metaclass Construction",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#preparing-the-class-namespace",
+                    "desc": "Hooks controlling how class namespaces are created during class definition.",
+                    "blocks": [
+                        {
+                            "id": "__prepare__",
+                            "name": "__prepare__(...)",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#metaclass.__prepare__",
+                            "kind": "method",
+                            "value_type": "Callable[[type, str, tuple[type, ...]], dict]",
+                            "desc": "Create the namespace used to execute the class body.",
+                            "point": [
+                                "Defined on metaclasses.",
+                                "Executed before the class body runs.",
+                                "Returns the mapping used as the class namespace.",
+                                "Often used to control attribute order or custom class dictionaries."
+                            ],
+                            "getters": [
+                                "Meta.__prepare__(name, bases)"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "class Meta(type):\n    @classmethod\n    def __prepare__(cls, name, bases):\n        print('creating namespace')\n        return {}\n\nclass A(metaclass=Meta):\n    x = 10",
+                                    "result": "prints 'creating namespace' before class body executes",
+                                    "link": ""
+                                }
+                            ]
+                        },
+                        {
+                            "id": "metaclass",
+                            "name": "metaclass=Meta",
+                            "kind": "syntax",
+                            "value_type": "class-definition",
+                            "desc": "Specify a metaclass controlling class creation.",
+                            "point": [
+                                "The metaclass defines how the class object is constructed."
+                            ],
+                            "getters": [
+                                "class A(metaclass=Meta)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "class-generics",
+                    "name": "Class Subscription / Generics",
+                    "blocks": [
+                        {
+                            "id": "__class_getitem__",
+                            "name": "__class_getitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[type[Self], Any], Any]",
+                            "desc": "Handle subscription of a class.",
+                            "point": [
+                                "Called when a class is indexed using square brackets.",
+                                "Used to implement generic types."
+                            ],
+                            "getters": [
+                                "Class[T]"
+                            ]
+                        },
+                        {
+                            "id": "class-subscription",
+                            "name": "Class[T]",
+                            "kind": "syntax",
+                            "value_type": "class-indexing",
+                            "desc": "Subscribe a class using square brackets.",
+                            "point": [
+                                "Calls Class.__class_getitem__(T)."
+                            ],
+                            "getters": [
+                                "Class[T]"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "class-mro",
+                    "name": "Inheritance Introspection",
+                    "blocks": [
+                        {
+                            "id": "__bases__",
+                            "name": "__bases__",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#type.__bases__",
+                            "kind": "attribute",
+                            "value_type": "tuple[type, ...]",
+                            "desc": "Tuple containing the direct base classes of a class.",
+                            "getters": [
+                                "Class.__bases__"
+                            ]
+                        },
+                        {
+                            "id": "__mro__",
+                            "name": "__mro__",
+                            "link": "https://docs.python.org/3/reference/datamodel.html#type.__mro__",
+                            "kind": "attribute",
+                            "value_type": "tuple[type, ...]",
+                            "desc": "Method Resolution Order for the class.",
+                            "point": [
+                                "Defines the order Python searches for attributes."
+                            ],
+                            "getters": [
+                                "Class.__mro__"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "type-introspection",
+                    "name": "Type Introspection",
+                    "blocks": [
+                        {
+                            "id": "type",
+                            "name": "type(...)",
+                            "link": "https://docs.python.org/3/library/functions.html#type",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], type]",
+                            "desc": "Return the type of an object.",
+                            "point": [
+                                "Used to inspect the runtime type of objects.",
+                                "Also acts as the metaclass for most Python classes."
+                            ],
+                            "getters": [
+                                "type(obj)"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-type-checking-protocol",
+            "name": "Type Checking Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#customizing-instance-and-subclass-checks",
+            "desc": "Hooks allowing classes or metaclasses to customize isinstance and issubclass behavior.",
+            "point": [
+                "These methods are implemented on the metaclass.",
+                "They control how Python determines type relationships.",
+                "Used heavily by the abc module."
+            ],
+            "blocks": [
+                {
+                    "id": "__instancecheck__",
+                    "name": "__instancecheck__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#class.__instancecheck__",
+                    "kind": "method",
+                    "value_type": "Callable[[type, object], bool]",
+                    "desc": "Customize the behavior of isinstance checks.",
+                    "point": [
+                        "Called by isinstance(obj, Class).",
+                        "Implemented on the metaclass."
+                    ],
+                    "getters": [
+                        "Class.__instancecheck__(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Meta(type):\n    def __instancecheck__(cls, instance):\n        return hasattr(instance, 'run')\n\nclass Runner(metaclass=Meta):\n    pass\n\nclass A:\n    def run(self):\n        pass\n\nisinstance(A(), Runner)",
+                            "result": "True",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__subclasscheck__",
+                    "name": "__subclasscheck__(...)",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#class.__subclasscheck__",
+                    "kind": "method",
+                    "value_type": "Callable[[type, type], bool]",
+                    "desc": "Customize the behavior of issubclass checks.",
+                    "point": [
+                        "Called by issubclass(Sub, Class).",
+                        "Implemented on the metaclass."
+                    ],
+                    "getters": [
+                        "Class.__subclasscheck__(Sub)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Meta(type):\n    def __subclasscheck__(cls, subclass):\n        return hasattr(subclass, 'run')\n\nclass Runner(metaclass=Meta):\n    pass",
+                            "result": "classes defining run() count as subclasses",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "isinstance",
+                    "name": "isinstance(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#isinstance",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object, type], bool]",
+                    "desc": "Check whether an object is an instance of a class.",
+                    "point": [
+                        "Calls Class.__instancecheck__(obj)."
+                    ],
+                    "getters": [
+                        "isinstance(obj, Class)"
+                    ]
+                },
+                {
+                    "id": "issubclass",
+                    "name": "issubclass(...)",
+                    "link": "https://docs.python.org/3/library/functions.html#issubclass",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[type, type], bool]",
+                    "desc": "Check whether a class is a subclass of another.",
+                    "point": [
+                        "Calls Class.__subclasscheck__(Sub)."
+                    ],
+                    "getters": [
+                        "issubclass(Sub, Class)"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "python-attribute-access",
             "name": "Attribute Access Protocol",
             "link": "https://docs.python.org/3/reference/datamodel.html#customizing-attribute-access",
@@ -403,196 +704,6 @@
             ]
         },
         {
-            "id": "python-class-basics",
-            "name": "Class Basics / Construction",
-            "link": "https://docs.python.org/3/reference/datamodel.html#customizing-instance-and-subclass-creation",
-            "desc": "Mechanisms controlling how classes create instances and how subclasses are initialized.",
-            "point": [
-                "These methods control instance creation and class behaviour.",
-                "They are executed during object construction or subclass definition.",
-                "They form the foundation of Python's class system."
-            ],
-            "blocks": [
-                {
-                    "id": "__new__",
-                    "name": "__new__(...)",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__new__",
-                    "kind": "method",
-                    "value_type": "Callable[[type[Self], ...], Self]",
-                    "desc": "Creates and returns a new instance of the class.",
-                    "point": [
-                        "Executed before __init__.",
-                        "Responsible for allocating the instance.",
-                        "Commonly overridden for immutable types."
-                    ],
-                    "getters": [
-                        "cls.__new__(cls, ...)"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class A:\n    def __new__(cls):\n        print('creating instance')\n        return super().__new__(cls)\n\nA()",
-                            "result": "prints 'creating instance'",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__init__",
-                    "name": "__init__(...)",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__init__",
-                    "kind": "method",
-                    "value_type": "Callable[[Self, ...], None]",
-                    "desc": "Initializes a newly created instance.",
-                    "point": [
-                        "Called immediately after __new__.",
-                        "Should configure the object's state.",
-                        "Must return None."
-                    ],
-                    "getters": [
-                        "obj.__init__(...)"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class A:\n    def __init__(self, x):\n        self.x = x\n\nA(10)",
-                            "result": "instance with x = 10",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__init_subclass__",
-                    "name": "__init_subclass__(...)",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__init_subclass__",
-                    "kind": "method",
-                    "value_type": "Callable[[type[Self], ...], None]",
-                    "desc": "Called when a class is subclassed.",
-                    "point": [
-                        "Executed during subclass creation.",
-                        "Often used to enforce subclass constraints or register subclasses."
-                    ],
-                    "getters": [
-                        "BaseClass.__init_subclass__(...)"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class Base:\n    def __init_subclass__(cls):\n        print('new subclass:', cls.__name__)\n\nclass A(Base):\n    pass",
-                            "result": "prints 'new subclass: A'",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__class_getitem__",
-                    "name": "__class_getitem__(...)",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__class_getitem__",
-                    "kind": "method",
-                    "value_type": "Callable[[type[Self], Any], Any]",
-                    "desc": "Handles subscription on classes.",
-                    "point": [
-                        "Used when evaluating Class[T].",
-                        "Commonly implemented by typing and generic libraries."
-                    ],
-                    "getters": [
-                        "Class[T]"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class A:\n    def __class_getitem__(cls, item):\n        return (cls, item)\n\nA[int]",
-                            "result": "(A, int)",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__mro_entries__",
-                    "name": "__mro_entries__(...)",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__mro_entries__",
-                    "kind": "method",
-                    "value_type": "Callable[[Self, tuple[type, ...]], tuple[type, ...]]",
-                    "desc": "Allows objects in class inheritance lists to customize the resulting MRO.",
-                    "point": [
-                        "Used during class creation when resolving base classes.",
-                        "Primarily used by typing.Generic and advanced metaprogramming."
-                    ],
-                    "getters": [
-                        "class C(BaseObject): ..."
-                    ],
-                    "examples": [
-                        {
-                            "code": "class Proxy:\n    def __mro_entries__(self, bases):\n        return (dict,)\n\nclass A(Proxy()):\n    pass",
-                            "result": "A inherits from dict",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__bases__",
-                    "name": "__bases__",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#type.__bases__",
-                    "kind": "attribute",
-                    "value_type": "tuple[type, ...]",
-                    "desc": "Tuple containing the base classes of a class.",
-                    "point": [
-                        "Defines the direct inheritance of the class."
-                    ],
-                    "getters": [
-                        "Class.__bases__"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class A: pass\nclass B(A): pass\n\nB.__bases__",
-                            "result": "(A,)",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "__mro__",
-                    "name": "__mro__",
-                    "link": "https://docs.python.org/3/reference/datamodel.html#type.__mro__",
-                    "kind": "attribute",
-                    "value_type": "tuple[type, ...]",
-                    "desc": "Method Resolution Order for the class.",
-                    "point": [
-                        "Defines the order Python searches for attributes.",
-                        "Computed using the C3 linearization algorithm."
-                    ],
-                    "getters": [
-                        "Class.__mro__"
-                    ],
-                    "examples": [
-                        {
-                            "code": "class A: pass\nclass B(A): pass\n\nB.__mro__",
-                            "result": "(B, A, object)",
-                            "link": ""
-                        }
-                    ]
-                },
-                {
-                    "id": "type",
-                    "name": "type(...)",
-                    "link": "https://docs.python.org/3/library/functions.html#type",
-                    "kind": "builtin-function",
-                    "value_type": "Callable[[object], type]",
-                    "desc": "Return the type of an object.",
-                    "point": [
-                        "Used to inspect the runtime type of objects.",
-                        "Also acts as the metaclass for most Python classes."
-                    ],
-                    "getters": [
-                        "type(obj)"
-                    ],
-                    "examples": [
-                        {
-                            "code": "type(5)",
-                            "result": "<class 'int'>",
-                            "link": ""
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "id": "python-object-lifecycle",
             "name": "Memory / Object Lifecycle",
             "link": "https://docs.python.org/3/reference/datamodel.html#object.__del__",
@@ -670,6 +781,224 @@
                             "link": ""
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "id": "python-memory-protocols",
+            "name": "Memory / Data Movement",
+            "desc": "Mechanisms controlling how objects expose, copy, and report their memory.",
+            "point": [
+                "These protocols define how Python objects interact with memory.",
+                "They control copying behavior, raw memory access, and memory introspection.",
+                "Many performance-sensitive libraries rely heavily on these mechanisms."
+            ],
+            "subcategories": [
+                {
+                    "id": "copy-protocol",
+                    "name": "Copy Protocol",
+                    "link": "https://docs.python.org/3/library/copy.html",
+                    "desc": "Methods allowing objects to control how they are duplicated.",
+                    "point": [
+                        "Used by the copy module.",
+                        "Allows objects to customize shallow and deep copying.",
+                        "Important for complex objects containing references."
+                    ],
+                    "blocks": [
+                        {
+                            "id": "__copy__",
+                            "name": "__copy__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Self]",
+                            "desc": "Define shallow copy behavior.",
+                            "point": [
+                                "Called by copy.copy(obj).",
+                                "Should return a new object with the same references."
+                            ],
+                            "getters": [
+                                "obj.__copy__()",
+                                "copy.copy(obj)"
+                            ]
+                        },
+                        {
+                            "id": "__deepcopy__",
+                            "name": "__deepcopy__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, dict], Self]",
+                            "desc": "Define deep copy behavior.",
+                            "point": [
+                                "Called by copy.deepcopy(obj).",
+                                "Receives a memo dictionary tracking already-copied objects.",
+                                "Should recursively copy referenced objects."
+                            ],
+                            "getters": [
+                                "obj.__deepcopy__(memo)",
+                                "copy.deepcopy(obj)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "buffer-protocol",
+                    "name": "Buffer Protocol",
+                    "link": "https://docs.python.org/3/c-api/buffer.html",
+                    "desc": "Mechanism allowing objects to expose raw memory buffers to other objects.",
+                    "point": [
+                        "Allows zero-copy sharing of binary data.",
+                        "Implemented primarily in CPython's C API.",
+                        "Used heavily by libraries like NumPy and PIL."
+                    ],
+                    "blocks": [
+                        {
+                            "id": "buffer-concept",
+                            "name": "Buffer",
+                            "kind": "concept",
+                            "value_type": "raw-memory",
+                            "desc": "Expose raw memory of an object without copying it.",
+                            "point": [
+                                "Allows direct access to internal binary data.",
+                                "Enables efficient data exchange between libraries.",
+                                "Often implemented by bytes-like objects."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "memoryview-interface",
+                    "name": "Memory Views",
+                    "link": "https://docs.python.org/3/library/stdtypes.html#memoryview",
+                    "desc": "Interface for interacting with objects exposing the buffer protocol.",
+                    "point": [
+                        "Provides a view over raw memory buffers.",
+                        "Allows slicing and inspection without copying data.",
+                        "Commonly used in high-performance data processing."
+                    ],
+                    "blocks": [
+                        {
+                            "id": "memoryview",
+                            "name": "memoryview(...)",
+                            "kind": "builtin-type",
+                            "value_type": "Callable[[object], memoryview]",
+                            "desc": "Create a memory view of an object exposing the buffer protocol.",
+                            "point": [
+                                "Access binary data without copying.",
+                                "Supports slicing and structured views.",
+                                "Works with many bytes-like objects."
+                            ],
+                            "getters": [
+                                "memoryview(obj)"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "b = bytearray(b'abc')\nm = memoryview(b)",
+                                    "result": "memory view referencing the same underlying buffer",
+                                    "link": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "memory-introspection",
+                    "name": "Memory Introspection",
+                    "link": "https://docs.python.org/3/reference/datamodel.html#object.__sizeof__",
+                    "desc": "Methods allowing inspection of an object's memory footprint and identity.",
+                    "point": [
+                        "Used for debugging and performance analysis.",
+                        "Provides insight into memory usage and object identity."
+                    ],
+                    "blocks": [
+                        {
+                            "id": "__sizeof__",
+                            "name": "__sizeof__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Return the size of the object in bytes.",
+                            "point": [
+                                "Called by sys.getsizeof().",
+                                "Represents the memory footprint of the object.",
+                                "May exclude referenced objects."
+                            ],
+                            "getters": [
+                                "obj.__sizeof__()"
+                            ]
+                        },
+                        {
+                            "id": "sys-getsizeof",
+                            "name": "sys.getsizeof(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Return the memory size of an object.",
+                            "point": [
+                                "Calls obj.__sizeof__() internally.",
+                                "May add interpreter overhead."
+                            ],
+                            "getters": [
+                                "sys.getsizeof(obj)"
+                            ]
+                        },
+                        {
+                            "id": "id",
+                            "name": "id(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Return the identity of an object.",
+                            "point": [
+                                "Unique identifier for the object during its lifetime.",
+                                "Often corresponds to the memory address in CPython."
+                            ],
+                            "getters": [
+                                "id(obj)"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-pattern-matching",
+            "name": "Pattern Matching Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__match_args__",
+            "desc": "Mechanisms allowing classes to define how they are matched in structural pattern matching.",
+            "point": [
+                "Used by the match statement introduced in Python 3.10.",
+                "Allows objects to define how positional patterns map to attributes."
+            ],
+            "blocks": [
+                {
+                    "id": "__match_args__",
+                    "name": "__match_args__",
+                    "kind": "attribute",
+                    "value_type": "tuple[str, ...]",
+                    "desc": "Define the attribute names used for positional pattern matching.",
+                    "point": [
+                        "Maps positional patterns to attribute names.",
+                        "Commonly generated automatically by dataclasses."
+                    ],
+                    "getters": [
+                        "Class.__match_args__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class Point:\n    __match_args__ = ('x', 'y')\n\np = Point()\nmatch p:\n    case Point(a, b):\n        print(a, b)",
+                            "result": "Matches using attributes x and y",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "match-case",
+                    "name": "match / case",
+                    "kind": "syntax",
+                    "value_type": "pattern-matching",
+                    "desc": "Perform structural pattern matching.",
+                    "point": [
+                        "Uses __match_args__ when matching positional class patterns."
+                    ],
+                    "getters": [
+                        "match obj:\n    case Class(...)"
+                    ],
+                    "examples": []
                 }
             ]
         },
@@ -841,6 +1170,133 @@
             ]
         },
         {
+            "id": "python-callable-protocol",
+            "name": "Callable Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__call__",
+            "desc": "Methods allowing objects to behave like functions.",
+            "point": [
+                "Objects implementing __call__ can be invoked like functions.",
+                "The call syntax obj(...) is translated into obj.__call__(...).",
+                "Commonly used for functors, decorators, and callable classes."
+            ],
+            "blocks": [
+                {
+                    "id": "__call__",
+                    "name": "__call__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, ...], Any]",
+                    "desc": "Invoke the object as a callable.",
+                    "point": [
+                        "Executed when the object is called like a function.",
+                        "Receives the same arguments passed to the call."
+                    ],
+                    "getters": [
+                        "obj.__call__(...)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __call__(self, x):\n        return x * 2\n\na = A()\na(5)",
+                            "result": "10",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "callable-operator",
+                    "name": "obj(...)",
+                    "kind": "operator",
+                    "value_type": "Any",
+                    "desc": "Call an object using function-call syntax.",
+                    "point": [
+                        "Translated internally to obj.__call__(...)."
+                    ],
+                    "getters": [
+                        "obj(...)"
+                    ],
+                    "examples": []
+                },
+                {
+                    "id": "callable",
+                    "name": "callable(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], bool]",
+                    "desc": "Check whether an object is callable.",
+                    "point": [
+                        "Returns True if the object implements __call__ or is a callable type."
+                    ],
+                    "getters": [
+                        "callable(obj)"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class A:\n    def __call__(self):\n        pass\n\ncallable(A())",
+                            "result": "True",
+                            "link": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-context-manager",
+            "name": "Context Manager Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#context-managers",
+            "desc": "Mechanisms allowing objects to manage resources using the with statement.",
+            "point": [
+                "Context managers handle setup and cleanup of resources.",
+                "Used by the with statement.",
+                "Commonly used for files, locks, and temporary environments."
+            ],
+            "blocks": [
+                {
+                    "id": "__enter__",
+                    "name": "__enter__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], Any]",
+                    "desc": "Enter the runtime context.",
+                    "point": [
+                        "Executed at the beginning of the with block.",
+                        "Its return value is bound to the variable after 'as'."
+                    ],
+                    "getters": [
+                        "obj.__enter__()"
+                    ],
+                    "examples": []
+                },
+                {
+                    "id": "__exit__",
+                    "name": "__exit__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self, type | None, BaseException | None, object | None], bool | None]",
+                    "desc": "Exit the runtime context.",
+                    "point": [
+                        "Executed when leaving the with block.",
+                        "Receives exception information if an error occurred.",
+                        "Returning True suppresses the exception."
+                    ],
+                    "getters": [
+                        "obj.__exit__(exc_type, exc, traceback)"
+                    ],
+                    "examples": []
+                },
+                {
+                    "id": "with-statement",
+                    "name": "with obj as name",
+                    "kind": "syntax",
+                    "value_type": "context-management",
+                    "desc": "Execute a block within a managed context.",
+                    "point": [
+                        "Calls obj.__enter__() at the beginning.",
+                        "Calls obj.__exit__() when leaving the block."
+                    ],
+                    "getters": [
+                        "with obj as x"
+                    ],
+                    "examples": []
+                }
+            ]
+        },
+        {
             "id": "python-representation",
             "name": "Representation / Stringification",
             "link": "https://docs.python.org/3/reference/datamodel.html#object.__repr__",
@@ -985,6 +1441,879 @@
                     ],
                     "getters": [
                         "format(obj, spec)"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-hash-protocol",
+            "name": "Hashing",
+            "link": "https://docs.python.org/3/reference/datamodel.html#object.__hash__",
+            "desc": "Mechanisms allowing objects to be used in hash-based collections.",
+            "point": [
+                "Hash values are used by dictionaries and sets.",
+                "Objects that compare equal must produce the same hash."
+            ],
+            "blocks": [
+                {
+                    "id": "__hash__",
+                    "name": "__hash__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], int]",
+                    "desc": "Return the hash value of the object.",
+                    "point": [
+                        "Called by hash(obj).",
+                        "Must remain constant during the object's lifetime."
+                    ],
+                    "getters": [
+                        "obj.__hash__()"
+                    ]
+                },
+                {
+                    "id": "hash",
+                    "name": "hash(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], int]",
+                    "desc": "Return the hash value of an object.",
+                    "point": [
+                        "Calls obj.__hash__()."
+                    ],
+                    "getters": [
+                        "hash(obj)"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-container-protocol",
+            "name": "Container / Collection Protocol",
+            "link": "https://docs.python.org/3/reference/datamodel.html#emulating-container-types",
+            "desc": "Methods allowing objects to behave like containers or collections.",
+            "point": [
+                "These methods define how objects expose their elements.",
+                "They enable iteration, membership checks, indexing, and length queries."
+            ],
+            "subcategories": [
+                {
+                    "id": "container-len",
+                    "name": "Length",
+                    "blocks": [
+                        {
+                            "id": "__len__",
+                            "name": "__len__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Return the number of items in the container.",
+                            "point": [
+                                "Must return a non-negative integer.",
+                                "Used by many Python operations."
+                            ],
+                            "getters": [
+                                "obj.__len__()"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "len",
+                            "name": "len(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Return the number of elements in a container.",
+                            "point": [
+                                "Calls obj.__len__()."
+                            ],
+                            "getters": [
+                                "len(obj)"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-contains",
+                    "name": "Membership",
+                    "blocks": [
+                        {
+                            "id": "__contains__",
+                            "name": "__contains__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, object], bool]",
+                            "desc": "Check whether an element exists in the container.",
+                            "point": [
+                                "Implements the membership test operator.",
+                                "Should return True or False."
+                            ],
+                            "getters": [
+                                "container.__contains__(item)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "operator-in",
+                            "name": "a in b",
+                            "kind": "operator",
+                            "value_type": "bool",
+                            "desc": "Test membership in a container.",
+                            "point": [
+                                "Calls b.__contains__(a).",
+                                "If missing, Python falls back to iteration."
+                            ],
+                            "getters": [
+                                "a in b"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-getitem",
+                    "name": "Indexing",
+                    "blocks": [
+                        {
+                            "id": "__getitem__",
+                            "name": "__getitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], Any]",
+                            "desc": "Retrieve an element using an index or key.",
+                            "point": [
+                                "Used for indexing operations.",
+                                "Often implemented by sequences and mappings."
+                            ],
+                            "getters": [
+                                "container.__getitem__(key)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "index-operator",
+                            "name": "container[key]",
+                            "kind": "operator",
+                            "value_type": "Any",
+                            "desc": "Access an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__getitem__(key)."
+                            ],
+                            "getters": [
+                                "container[key]"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-setitem",
+                    "name": "Assignment",
+                    "blocks": [
+                        {
+                            "id": "__setitem__",
+                            "name": "__setitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any, Any], None]",
+                            "desc": "Assign a value to an index or key.",
+                            "point": [
+                                "Implements indexed assignment.",
+                                "Commonly used by mutable sequences and mappings."
+                            ],
+                            "getters": [
+                                "container[key] = value"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "setitem-operator",
+                            "name": "container[key] = value",
+                            "kind": "operator",
+                            "value_type": "assignment",
+                            "desc": "Assign an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__setitem__(key, value)."
+                            ],
+                            "getters": [
+                                "container[key] = value"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-delitem",
+                    "name": "Deletion",
+                    "blocks": [
+                        {
+                            "id": "__delitem__",
+                            "name": "__delitem__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], None]",
+                            "desc": "Delete an element from the container.",
+                            "point": [
+                                "Implements deletion of indexed or keyed elements."
+                            ],
+                            "getters": [
+                                "del container[key]"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "delitem-operator",
+                            "name": "del container[key]",
+                            "kind": "operator",
+                            "value_type": "deletion",
+                            "desc": "Delete an element using indexing syntax.",
+                            "point": [
+                                "Calls container.__delitem__(key)."
+                            ],
+                            "getters": [
+                                "del container[key]"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "container-index-protocol",
+                    "name": "Integer Indexing",
+                    "desc": "Protocol allowing objects to behave like integers in indexing contexts.",
+                    "blocks": [
+                        {
+                            "id": "__index__",
+                            "name": "__index__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Return the integer representation of the object for indexing operations.",
+                            "point": [
+                                "Used when Python requires an exact integer.",
+                                "Different from __int__ which performs numeric conversion.",
+                                "Commonly implemented by integer-like objects."
+                            ],
+                            "getters": [
+                                "obj.__index__()"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __index__(self):\n        return 3\n\n[10,20,30,40][A()]",
+                                    "result": "30",
+                                    "link": ""
+                                }
+                            ]
+                        }
+                    ],
+                    "subcategories": [
+                        {
+                            "id": "index-usage",
+                            "name": "Usage",
+                            "blocks": [
+                                {
+                                    "id": "indexing",
+                                    "name": "container[obj]",
+                                    "kind": "syntax",
+                                    "value_type": "indexing",
+                                    "desc": "Use an object as an index.",
+                                    "point": [
+                                        "Python calls obj.__index__() to obtain an integer."
+                                    ],
+                                    "getters": [
+                                        "container[obj]"
+                                    ]
+                                },
+                                {
+                                    "id": "slice",
+                                    "name": "slice indices",
+                                    "kind": "syntax",
+                                    "value_type": "slice-index",
+                                    "desc": "Objects used in slice positions must implement __index__.",
+                                    "getters": [
+                                        "a[start:stop:step]"
+                                    ]
+                                },
+                                {
+                                    "id": "bin-hex-oct",
+                                    "name": "bin / hex / oct",
+                                    "kind": "builtin-function",
+                                    "value_type": "Callable[[object], str]",
+                                    "desc": "Convert an integer-like object to binary, hexadecimal, or octal.",
+                                    "point": [
+                                        "Uses the __index__ method."
+                                    ],
+                                    "getters": [
+                                        "bin(obj)",
+                                        "hex(obj)",
+                                        "oct(obj)"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "truth-value",
+                    "name": "Truth Value Testing",
+                    "blocks": [
+                        {
+                            "id": "__bool__",
+                            "name": "__bool__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], bool]",
+                            "desc": "Return the truth value of the object.",
+                            "point": [
+                                "Called when Python evaluates the object in a boolean context.",
+                                "If not implemented, Python falls back to __len__."
+                            ],
+                            "getters": [
+                                "bool(obj)",
+                                "if obj",
+                                "while obj"
+                            ]
+                        },
+                        {
+                            "id": "bool",
+                            "name": "bool(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], bool]",
+                            "desc": "Return the truth value of an object.",
+                            "point": [
+                                "Calls obj.__bool__() if defined.",
+                                "Otherwise falls back to __len__."
+                            ],
+                            "getters": [
+                                "bool(obj)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "numeric-conversion-protocol",
+                    "name": "Numeric Conversion",
+                    "desc": "Methods allowing objects to convert themselves to numeric types.",
+                    "blocks": [
+                        {
+                            "id": "__int__",
+                            "name": "__int__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Convert the object to an integer.",
+                            "point": [
+                                "Called by int(obj).",
+                                "Should return an integer representation of the object."
+                            ],
+                            "getters": [
+                                "obj.__int__()"
+                            ]
+                        },
+                        {
+                            "id": "__float__",
+                            "name": "__float__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], float]",
+                            "desc": "Convert the object to a floating-point number.",
+                            "point": [
+                                "Called by float(obj).",
+                                "Should return a float representation of the object."
+                            ],
+                            "getters": [
+                                "obj.__float__()"
+                            ]
+                        },
+                        {
+                            "id": "__complex__",
+                            "name": "__complex__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], complex]",
+                            "desc": "Convert the object to a complex number.",
+                            "point": [
+                                "Called by complex(obj)."
+                            ],
+                            "getters": [
+                                "obj.__complex__()"
+                            ]
+                        },
+                        {
+                            "id": "__round__",
+                            "name": "__round__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, int | None], Any]",
+                            "desc": "Customize rounding behavior.",
+                            "point": [
+                                "Called by round(obj).",
+                                "Receives the optional ndigits argument."
+                            ],
+                            "getters": [
+                                "obj.__round__(ndigits)"
+                            ]
+                        },
+                        {
+                            "id": "int",
+                            "name": "int(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Convert a value to an integer.",
+                            "point": [
+                                "Calls obj.__int__() if defined."
+                            ],
+                            "getters": [
+                                "int(obj)"
+                            ]
+                        },
+                        {
+                            "id": "float",
+                            "name": "float(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], float]",
+                            "desc": "Convert a value to a floating-point number.",
+                            "point": [
+                                "Calls obj.__float__() if defined."
+                            ],
+                            "getters": [
+                                "float(obj)"
+                            ]
+                        },
+                        {
+                            "id": "complex",
+                            "name": "complex(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], complex]",
+                            "desc": "Convert a value to a complex number.",
+                            "point": [
+                                "Calls obj.__complex__() if defined."
+                            ],
+                            "getters": [
+                                "complex(obj)"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-iterator-protocol",
+            "name": "Iterator Protocol",
+            "link": "https://docs.python.org/3/library/stdtypes.html#typeiter",
+            "desc": "Mechanisms allowing objects to produce a sequence of values one at a time.",
+            "point": [
+                "Iterators produce values sequentially.",
+                "They are typically returned by __iter__.",
+                "Iteration continues until StopIteration is raised."
+            ],
+            "blocks": [
+                {
+                    "id": "__next__",
+                    "name": "__next__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], Any]",
+                    "desc": "Return the next item from the iterator.",
+                    "point": [
+                        "Called repeatedly during iteration.",
+                        "Must raise StopIteration when no items remain."
+                    ],
+                    "getters": [
+                        "iterator.__next__()"
+                    ]
+                },
+                {
+                    "id": "next",
+                    "name": "next(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[Iterator[Any]], Any] | Callable[[Iterator[Any], Any], Any]",
+                    "desc": "Retrieve the next item from an iterator.",
+                    "point": [
+                        "Calls iterator.__next__().",
+                        "If a default value is provided, it is returned instead of raising StopIteration."
+                    ],
+                    "getters": [
+                        "next(iterator)",
+                        "next(iterator, default)"
+                    ]
+                }
+            ],
+            "subcategories": [
+                {
+                    "id": "container-iteration",
+                    "name": "Iteration",
+                    "blocks": [
+                        {
+                            "id": "__iter__",
+                            "name": "__iter__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Iterator[Any]]",
+                            "desc": "Return an iterator for the object.",
+                            "point": [
+                                "Used by for-loops and many built-in functions.",
+                                "The returned object must implement __next__."
+                            ],
+                            "getters": [
+                                "obj.__iter__()"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "for-loop",
+                            "name": "for x in container",
+                            "kind": "syntax",
+                            "value_type": "iteration",
+                            "desc": "Iterate over elements of a container.",
+                            "point": [
+                                "Calls iter(container).",
+                                "Then repeatedly calls next(...) on the iterator."
+                            ],
+                            "getters": [
+                                "for x in container"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "iter",
+                            "name": "iter(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], Iterator[Any]] | Callable[[Callable[[], Any], Any], Iterator[Any]]",
+                            "desc": "Return an iterator for an object.",
+                            "point": [
+                                "Calls obj.__iter__() when available.",
+                                "If __iter__ is missing, Python falls back to the sequence protocol using __getitem__.",
+                                "The two-argument form repeatedly calls a function until a sentinel value is returned."
+                            ],
+                            "getters": [
+                                "iter(obj)",
+                                "iter(callable, sentinel)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "container-reversed",
+                    "name": "Reverse Iteration",
+                    "blocks": [
+                        {
+                            "id": "__reversed__",
+                            "name": "__reversed__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Iterator]",
+                            "desc": "Return an iterator yielding elements in reverse order.",
+                            "point": [
+                                "Called by reversed(obj).",
+                                "If missing, Python may fall back to __len__ and __getitem__."
+                            ],
+                            "getters": [
+                                "reversed(container)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "reversed",
+                            "name": "reversed(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], Iterator]",
+                            "desc": "Return a reverse iterator over a container.",
+                            "point": [
+                                "Calls obj.__reversed__() if available."
+                            ],
+                            "getters": [
+                                "reversed(obj)"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "iterator-length-hint",
+                    "name": "Length Hint",
+                    "blocks": [
+                        {
+                            "id": "__length_hint__",
+                            "name": "__length_hint__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], int]",
+                            "desc": "Return an estimate of the number of remaining elements.",
+                            "point": [
+                                "Used as a performance optimization.",
+                                "Commonly implemented by iterators.",
+                                "The returned value may be approximate."
+                            ],
+                            "getters": [
+                                "obj.__length_hint__()"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "operator-length-hint",
+                            "name": "operator.length_hint(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], int]",
+                            "desc": "Return the length hint of an iterable.",
+                            "point": [
+                                "Calls obj.__length_hint__() if available.",
+                                "Returns 0 if no hint is provided."
+                            ],
+                            "getters": [
+                                "operator.length_hint(obj)"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-generators",
+            "name": "Generator Protocol",
+            "link": "https://docs.python.org/3/reference/expressions.html#yield-expressions",
+            "desc": "Mechanisms allowing functions to produce values lazily using yield.",
+            "point": [
+                "Generators implement the iterator protocol automatically.",
+                "Each yield pauses execution and returns a value.",
+                "Execution resumes when the next value is requested."
+            ],
+            "subcategories": [
+                {
+                    "id": "generator-syntax",
+                    "name": "Generator Syntax",
+                    "blocks": [
+                        {
+                            "id": "yield",
+                            "name": "yield",
+                            "kind": "syntax",
+                            "value_type": "generator-yield",
+                            "desc": "Pause execution and produce a value from a generator.",
+                            "point": [
+                                "Used inside generator functions.",
+                                "Suspends execution and returns a value to the caller."
+                            ],
+                            "getters": [
+                                "yield value"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "def gen():\n    yield 1\n    yield 2",
+                                    "result": "produces values lazily",
+                                    "link": ""
+                                }
+                            ]
+                        },
+                        {
+                            "id": "yield-from",
+                            "name": "yield from",
+                            "kind": "syntax",
+                            "value_type": "generator-delegation",
+                            "desc": "Delegate iteration to another iterable.",
+                            "point": [
+                                "Used to compose generators.",
+                                "Passes values and control between generators."
+                            ],
+                            "getters": [
+                                "yield from iterable"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "generator-methods",
+                    "name": "Generator Methods",
+                    "blocks": [
+                        {
+                            "id": "generator-send",
+                            "name": "send(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], Any]",
+                            "desc": "Resume the generator and send a value into it.",
+                            "point": [
+                                "The value becomes the result of the suspended yield expression."
+                            ],
+                            "getters": [
+                                "generator.send(value)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "generator-throw",
+                            "name": "throw(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, type, BaseException | None, object | None], Any]",
+                            "desc": "Raise an exception inside the generator.",
+                            "point": [
+                                "The exception is raised at the suspended yield."
+                            ],
+                            "getters": [
+                                "generator.throw(exc)"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "generator-close",
+                            "name": "close(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], None]",
+                            "desc": "Terminate the generator.",
+                            "point": [
+                                "Raises GeneratorExit inside the generator."
+                            ],
+                            "getters": [
+                                "generator.close()"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-async-protocols",
+            "name": "Async Protocols",
+            "link": "https://docs.python.org/3/reference/datamodel.html#asynchronous-iterators",
+            "desc": "Protocols used by Python's asynchronous execution model.",
+            "point": [
+                "These methods define the behavior of awaitables, coroutines, and async iterators.",
+                "They power async/await syntax."
+            ],
+            "blocks": [
+                {
+                    "id": "asyncio-note",
+                    "name": "asyncio",
+                    "kind": "concept",
+                    "desc": "High-level asynchronous framework built on the async protocols.",
+                    "point": [
+                        "Provides event loops, tasks, and scheduling.",
+                        "Uses awaitables, async iterators, and async context managers."
+                    ]
+                }
+            ],
+            "subcategories": [
+                {
+                    "id": "async-awaitable",
+                    "name": "Awaitable",
+                    "blocks": [
+                        {
+                            "id": "__await__",
+                            "name": "__await__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Iterator]",
+                            "desc": "Return an iterator used to implement await.",
+                            "point": [
+                                "Called when awaiting an object.",
+                                "Must return an iterator."
+                            ],
+                            "getters": [
+                                "await obj"
+                            ],
+                            "examples": []
+                        },
+                        {
+                            "id": "await-syntax",
+                            "name": "await obj",
+                            "kind": "syntax",
+                            "value_type": "await-expression",
+                            "desc": "Suspend execution until the awaitable completes.",
+                            "point": [
+                                "Calls obj.__await__()."
+                            ],
+                            "getters": [
+                                "await obj"
+                            ],
+                            "examples": []
+                        }
+                    ]
+                },
+                {
+                    "id": "async-iterator",
+                    "name": "Async Iteration",
+                    "blocks": [
+                        {
+                            "id": "__aiter__",
+                            "name": "__aiter__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], AsyncIterator]",
+                            "desc": "Return an asynchronous iterator.",
+                            "getters": [
+                                "obj.__aiter__()"
+                            ]
+                        },
+                        {
+                            "id": "__anext__",
+                            "name": "__anext__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Awaitable]",
+                            "desc": "Return the next item asynchronously.",
+                            "getters": [
+                                "obj.__anext__()"
+                            ]
+                        },
+                        {
+                            "id": "async-for",
+                            "name": "async for",
+                            "kind": "syntax",
+                            "value_type": "async-iteration",
+                            "desc": "Iterate asynchronously over an async iterator.",
+                            "point": [
+                                "Calls __aiter__ and repeatedly awaits __anext__."
+                            ],
+                            "getters": [
+                                "async for x in obj"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "async-context-manager",
+                    "name": "Async Context Manager",
+                    "blocks": [
+                        {
+                            "id": "__aenter__",
+                            "name": "__aenter__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Awaitable]",
+                            "desc": "Async version of __enter__.",
+                            "getters": [
+                                "await obj.__aenter__()"
+                            ]
+                        },
+                        {
+                            "id": "__aexit__",
+                            "name": "__aexit__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, type | None, BaseException | None, object | None], Awaitable]",
+                            "desc": "Async version of __exit__.",
+                            "getters": [
+                                "await obj.__aexit__(...)"
+                            ]
+                        },
+                        {
+                            "id": "async-with",
+                            "name": "async with",
+                            "kind": "syntax",
+                            "value_type": "async-context",
+                            "desc": "Execute a block within an asynchronous context manager.",
+                            "getters": [
+                                "async with obj"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "async-generators",
+                    "name": "Async Generators",
+                    "blocks": [
+                        {
+                            "id": "async-yield",
+                            "name": "async def ... yield",
+                            "kind": "syntax",
+                            "value_type": "async-generator",
+                            "desc": "Define an asynchronous generator.",
+                            "point": [
+                                "Produces values asynchronously.",
+                                "Used with async for."
+                            ],
+                            "getters": [
+                                "async for x in gen()"
+                            ]
+                        },
+                        {
+                            "id": "anext",
+                            "name": "anext(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[AsyncIterator], Awaitable]",
+                            "desc": "Retrieve the next item from an async iterator.",
+                            "getters": [
+                                "await anext(iterator)"
+                            ]
+                        }
                     ]
                 }
             ]
@@ -1903,326 +3232,290 @@
             ]
         },
         {
-            "id": "python-container-protocol",
-            "name": "Container / Collection Protocol",
-            "link": "https://docs.python.org/3/reference/datamodel.html#emulating-container-types",
-            "desc": "Methods allowing objects to behave like containers or collections.",
+            "id": "python-path-protocol",
+            "name": "Path Protocol",
+            "link": "https://docs.python.org/3/library/os.html#os.PathLike",
+            "desc": "Protocol allowing objects to represent filesystem paths.",
             "point": [
-                "These methods define how objects expose their elements.",
-                "They enable iteration, membership checks, indexing, and length queries."
+                "Defines how objects convert to filesystem paths.",
+                "Used by many standard library functions.",
+                "Implemented by pathlib.Path and custom path-like objects."
+            ],
+            "blocks": [
+                {
+                    "id": "__fspath__",
+                    "name": "__fspath__(...)",
+                    "kind": "method",
+                    "value_type": "Callable[[Self], str | bytes]",
+                    "desc": "Return the filesystem path representation of the object.",
+                    "point": [
+                        "Called by os.fspath().",
+                        "Should return a string or bytes path."
+                    ],
+                    "getters": [
+                        "obj.__fspath__()"
+                    ],
+                    "examples": [
+                        {
+                            "code": "class MyPath:\n    def __fspath__(self):\n        return '/tmp/file.txt'\n\nimport os\nos.fspath(MyPath())",
+                            "result": "'/tmp/file.txt'",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "os-fspath",
+                    "name": "os.fspath(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[object], str | bytes]",
+                    "desc": "Return the filesystem path representation of a path-like object.",
+                    "point": [
+                        "Calls obj.__fspath__() if implemented.",
+                        "Returns the object unchanged if it is already str or bytes."
+                    ],
+                    "getters": [
+                        "os.fspath(obj)"
+                    ],
+                    "examples": []
+                },
+                {
+                    "id": "pathlike",
+                    "name": "os.PathLike",
+                    "kind": "abstract-base-class",
+                    "value_type": "type",
+                    "desc": "Abstract base class for objects implementing the path protocol.",
+                    "point": [
+                        "Defines the __fspath__ method.",
+                        "Used for type checking."
+                    ],
+                    "getters": [
+                        "isinstance(obj, os.PathLike)"
+                    ],
+                    "examples": []
+                }
             ],
             "subcategories": [
                 {
-                    "id": "container-len",
-                    "name": "Length",
+                    "id": "pathlib",
+                    "name": "Pathlib",
+                    "desc": "High-level path manipulation utilities.",
                     "blocks": [
                         {
-                            "id": "__len__",
-                            "name": "__len__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self], int]",
-                            "desc": "Return the number of items in the container.",
+                            "id": "pathlib-path",
+                            "name": "pathlib.Path(...)",
+                            "kind": "standard-library",
+                            "value_type": "path-object",
+                            "desc": "Object-oriented representation of filesystem paths.",
                             "point": [
-                                "Must return a non-negative integer.",
-                                "Used by many Python operations."
+                                "Implements the Path Protocol.",
+                                "Provides convenient filesystem operations."
                             ],
                             "getters": [
-                                "obj.__len__()"
+                                "Path('file.txt')"
                             ],
-                            "examples": []
-                        },
-                        {
-                            "id": "len",
-                            "name": "len(...)",
-                            "kind": "builtin-function",
-                            "value_type": "Callable[[object], int]",
-                            "desc": "Return the number of elements in a container.",
-                            "point": [
-                                "Calls obj.__len__()."
-                            ],
-                            "getters": [
-                                "len(obj)"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-contains",
-                    "name": "Membership",
-                    "blocks": [
-                        {
-                            "id": "__contains__",
-                            "name": "__contains__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self, object], bool]",
-                            "desc": "Check whether an element exists in the container.",
-                            "point": [
-                                "Implements the membership test operator.",
-                                "Should return True or False."
-                            ],
-                            "getters": [
-                                "container.__contains__(item)"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "operator-in",
-                            "name": "a in b",
-                            "kind": "operator",
-                            "value_type": "bool",
-                            "desc": "Test membership in a container.",
-                            "point": [
-                                "Calls b.__contains__(a).",
-                                "If missing, Python falls back to iteration."
-                            ],
-                            "getters": [
-                                "a in b"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-iteration",
-                    "name": "Iteration",
-                    "blocks": [
-                        {
-                            "id": "__iter__",
-                            "name": "__iter__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self], Iterator]",
-                            "desc": "Return an iterator over the container.",
-                            "point": [
-                                "Used by for-loops and many built-in functions.",
-                                "The returned object must implement __next__."
-                            ],
-                            "getters": [
-                                "obj.__iter__()"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "for-loop",
-                            "name": "for x in container",
-                            "kind": "syntax",
-                            "value_type": "iteration",
-                            "desc": "Iterate over elements of a container.",
-                            "point": [
-                                "Calls iter(container).",
-                                "Then repeatedly calls __next__ on the iterator."
-                            ],
-                            "getters": [
-                                "for x in container"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-getitem",
-                    "name": "Indexing",
-                    "blocks": [
-                        {
-                            "id": "__getitem__",
-                            "name": "__getitem__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self, Any], Any]",
-                            "desc": "Retrieve an element using an index or key.",
-                            "point": [
-                                "Used for indexing operations.",
-                                "Often implemented by sequences and mappings."
-                            ],
-                            "getters": [
-                                "container.__getitem__(key)"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "index-operator",
-                            "name": "container[key]",
-                            "kind": "operator",
-                            "value_type": "Any",
-                            "desc": "Access an element using indexing syntax.",
-                            "point": [
-                                "Calls container.__getitem__(key)."
-                            ],
-                            "getters": [
-                                "container[key]"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-setitem",
-                    "name": "Assignment",
-                    "blocks": [
-                        {
-                            "id": "__setitem__",
-                            "name": "__setitem__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self, Any, Any], None]",
-                            "desc": "Assign a value to an index or key.",
-                            "point": [
-                                "Implements indexed assignment.",
-                                "Commonly used by mutable sequences and mappings."
-                            ],
-                            "getters": [
-                                "container[key] = value"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "setitem-operator",
-                            "name": "container[key] = value",
-                            "kind": "operator",
-                            "value_type": "assignment",
-                            "desc": "Assign an element using indexing syntax.",
-                            "point": [
-                                "Calls container.__setitem__(key, value)."
-                            ],
-                            "getters": [
-                                "container[key] = value"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-delitem",
-                    "name": "Deletion",
-                    "blocks": [
-                        {
-                            "id": "__delitem__",
-                            "name": "__delitem__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self, Any], None]",
-                            "desc": "Delete an element from the container.",
-                            "point": [
-                                "Implements deletion of indexed or keyed elements."
-                            ],
-                            "getters": [
-                                "del container[key]"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "delitem-operator",
-                            "name": "del container[key]",
-                            "kind": "operator",
-                            "value_type": "deletion",
-                            "desc": "Delete an element using indexing syntax.",
-                            "point": [
-                                "Calls container.__delitem__(key)."
-                            ],
-                            "getters": [
-                                "del container[key]"
-                            ],
-                            "examples": []
-                        }
-                    ]
-                },
-                {
-                    "id": "container-reversed",
-                    "name": "Reverse Iteration",
-                    "blocks": [
-                        {
-                            "id": "__reversed__",
-                            "name": "__reversed__(...)",
-                            "kind": "method",
-                            "value_type": "Callable[[Self], Iterator]",
-                            "desc": "Return an iterator yielding elements in reverse order.",
-                            "point": [
-                                "Called by reversed(obj).",
-                                "If missing, Python may fall back to __len__ and __getitem__."
-                            ],
-                            "getters": [
-                                "reversed(container)"
-                            ],
-                            "examples": []
-                        },
-                        {
-                            "id": "reversed",
-                            "name": "reversed(...)",
-                            "kind": "builtin-function",
-                            "value_type": "Callable[[object], Iterator]",
-                            "desc": "Return a reverse iterator over a container.",
-                            "point": [
-                                "Calls obj.__reversed__() if available."
-                            ],
-                            "getters": [
-                                "reversed(obj)"
-                            ],
-                            "examples": []
+                            "examples": [
+                                {
+                                    "code": "from pathlib import Path\np = Path('file.txt')\nopen(p)",
+                                    "result": "Path works anywhere a path is expected",
+                                    "link": ""
+                                }
+                            ]
                         }
                     ]
                 }
             ]
         },
         {
-            "id": "python-callable-protocol",
-            "name": "Callable Protocol",
-            "link": "https://docs.python.org/3/reference/datamodel.html#object.__call__",
-            "desc": "Methods allowing objects to behave like functions.",
+            "id": "python-abc-protocol",
+            "name": "Abstract Base Class Protocol",
+            "link": "https://docs.python.org/3/library/abc.html",
+            "desc": "Mechanisms allowing classes to customize subclass checks.",
             "point": [
-                "Objects implementing __call__ can be invoked like functions.",
-                "The call syntax obj(...) is translated into obj.__call__(...).",
-                "Commonly used for functors, decorators, and callable classes."
+                "Used by the abc module.",
+                "Allows classes to define virtual subclass relationships."
             ],
             "blocks": [
                 {
-                    "id": "__call__",
-                    "name": "__call__(...)",
+                    "id": "__subclasshook__",
+                    "name": "__subclasshook__(...)",
+                    "link": "https://docs.python.org/3/library/abc.html#abc.ABCMeta.__subclasshook__",
                     "kind": "method",
-                    "value_type": "Callable[[Self, ...], Any]",
-                    "desc": "Invoke the object as a callable.",
+                    "value_type": "Callable[[type, type], bool | NotImplemented]",
+                    "desc": "Customize the behavior of issubclass checks.",
                     "point": [
-                        "Executed when the object is called like a function.",
-                        "Receives the same arguments passed to the call."
+                        "Called by issubclass().",
+                        "Allows classes to declare virtual subclasses."
                     ],
                     "getters": [
-                        "obj.__call__(...)"
+                        "issubclass(Sub, Base)"
                     ],
                     "examples": [
                         {
-                            "code": "class A:\n    def __call__(self, x):\n        return x * 2\n\na = A()\na(5)",
-                            "result": "10",
+                            "code": "from abc import ABC\n\nclass MyABC(ABC):\n    @classmethod\n    def __subclasshook__(cls, C):\n        if any('run' in B.__dict__ for B in C.__mro__):\n            return True\n        return NotImplemented",
+                            "result": "classes implementing run() count as subclasses",
                             "link": ""
                         }
                     ]
                 },
                 {
-                    "id": "callable-operator",
-                    "name": "obj(...)",
-                    "kind": "operator",
-                    "value_type": "Any",
-                    "desc": "Call an object using function-call syntax.",
+                    "id": "issubclass",
+                    "name": "issubclass(...)",
+                    "kind": "builtin-function",
+                    "value_type": "Callable[[type, type], bool]",
+                    "desc": "Check whether a class is considered a subclass of another.",
                     "point": [
-                        "Translated internally to obj.__call__(...)."
+                        "Uses the subclass hook if defined."
                     ],
                     "getters": [
-                        "obj(...)"
-                    ],
-                    "examples": []
+                        "issubclass(A, B)"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-serialization-protocols",
+            "name": "Serialization Protocols",
+            "link": "https://docs.python.org/3/library/pickle.html",
+            "desc": "Methods allowing objects to define how they are serialized, copied, and reconstructed.",
+            "point": [
+                "Used by pickle, copy, multiprocessing, and many libraries.",
+                "Allow objects to control how their state is saved and restored."
+            ],
+            "subcategories": [
+                {
+                    "id": "pickle-protocol",
+                    "name": "Pickle Protocol",
+                    "blocks": [
+                        {
+                            "id": "__reduce__",
+                            "name": "__reduce__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], tuple]",
+                            "desc": "Return instructions for reconstructing the object during pickling.",
+                            "point": [
+                                "Low-level pickle protocol hook.",
+                                "Returns a tuple describing how to rebuild the object."
+                            ],
+                            "getters": [
+                                "obj.__reduce__()"
+                            ]
+                        },
+                        {
+                            "id": "__reduce_ex__",
+                            "name": "__reduce_ex__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, int], tuple]",
+                            "desc": "Version-aware variant of __reduce__.",
+                            "point": [
+                                "Receives the pickle protocol version.",
+                                "Preferred by the pickle module."
+                            ],
+                            "getters": [
+                                "obj.__reduce_ex__(protocol)"
+                            ]
+                        },
+                        {
+                            "id": "__getnewargs__",
+                            "name": "__getnewargs__(...)",
+                            "link": "https://docs.python.org/3/library/pickle.html#object.__getnewargs__",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], tuple]",
+                            "desc": "Return arguments for the object's __new__ method during unpickling.",
+                            "point": [
+                                "Used for objects requiring arguments during construction.",
+                                "Returns a tuple passed to __new__."
+                            ],
+                            "getters": [
+                                "obj.__getnewargs__()"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __new__(cls, x):\n        return super().__new__(cls)\n\n    def __getnewargs__(self):\n        return (10,)",
+                                    "result": "pickle passes (10,) to __new__",
+                                    "link": ""
+                                }
+                            ]
+                        },
+                        {
+                            "id": "__getnewargs_ex__",
+                            "name": "__getnewargs_ex__(...)",
+                            "link": "https://docs.python.org/3/library/pickle.html#object.__getnewargs_ex__",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], tuple[tuple, dict]]",
+                            "desc": "Return positional and keyword arguments for __new__ during unpickling.",
+                            "point": [
+                                "More flexible version of __getnewargs__.",
+                                "Returns (args, kwargs)."
+                            ],
+                            "getters": [
+                                "obj.__getnewargs_ex__()"
+                            ],
+                            "examples": [
+                                {
+                                    "code": "class A:\n    def __getnewargs_ex__(self):\n        return ((1,), {'y': 2})",
+                                    "result": "pickle calls __new__(1, y=2)",
+                                    "link": ""
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "id": "callable",
-                    "name": "callable(...)",
-                    "kind": "builtin-function",
-                    "value_type": "Callable[[object], bool]",
-                    "desc": "Check whether an object is callable.",
-                    "point": [
-                        "Returns True if the object implements __call__ or is a callable type."
-                    ],
-                    "getters": [
-                        "callable(obj)"
-                    ],
-                    "examples": [
+                    "id": "pickle-state",
+                    "name": "Object State",
+                    "blocks": [
                         {
-                            "code": "class A:\n    def __call__(self):\n        pass\n\ncallable(A())",
-                            "result": "True",
-                            "link": ""
+                            "id": "__getstate__",
+                            "name": "__getstate__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self], Any]",
+                            "desc": "Return the serializable state of the object.",
+                            "point": [
+                                "Used by pickle to extract object state.",
+                                "Often returns a dictionary."
+                            ],
+                            "getters": [
+                                "obj.__getstate__()"
+                            ]
+                        },
+                        {
+                            "id": "__setstate__",
+                            "name": "__setstate__(...)",
+                            "kind": "method",
+                            "value_type": "Callable[[Self, Any], None]",
+                            "desc": "Restore object state during unpickling.",
+                            "point": [
+                                "Receives the state returned by __getstate__."
+                            ],
+                            "getters": [
+                                "obj.__setstate__(state)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "serialization-builtins",
+                    "name": "Serialization Helpers",
+                    "blocks": [
+                        {
+                            "id": "pickle-dumps",
+                            "name": "pickle.dumps(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[object], bytes]",
+                            "desc": "Serialize an object to a byte string.",
+                            "getters": [
+                                "pickle.dumps(obj)"
+                            ]
+                        },
+                        {
+                            "id": "pickle-loads",
+                            "name": "pickle.loads(...)",
+                            "kind": "builtin-function",
+                            "value_type": "Callable[[bytes], object]",
+                            "desc": "Deserialize an object from a byte string.",
+                            "getters": [
+                                "pickle.loads(data)"
+                            ]
                         }
                     ]
                 }
