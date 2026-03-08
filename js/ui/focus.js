@@ -58,7 +58,6 @@ export function focusFirstSearchMatch() {
 }
 
 export function focusContentCategory(catId) {
-
     const section = document.querySelector(
         `.gallery[data-category-id="${CSS.escape(catId)}"]`
     );
@@ -67,11 +66,10 @@ export function focusContentCategory(catId) {
 
     section.scrollIntoView({
         behavior: "smooth",
-        block: "start"
+        block: "nearest"
     });
 
     focusSidebarCategory(catId);
-
 }
 
 export function focusContentBlock(blockId) {
