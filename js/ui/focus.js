@@ -1,37 +1,35 @@
 import { state } from "../state.js";
 
-export function focusFirstSearchMatch() {
-
+export function focusBestSearchMatch() {
     const candidates = [];
 
     for (const entry of state.categories) {
-
         if (entry.kind !== "content") continue;
         if (!entry.el || entry.el.style.display === "none") continue;
 
         candidates.push({
             type: "category",
             data: entry.data,
-            el: entry.el
+            el: entry.el,
+            score: Number(entry.el.dataset.searchScore ?? 0)
         });
-
     }
 
     for (const entry of state.blocks) {
-
         if (!entry.el || entry.el.style.display === "none") continue;
 
         candidates.push({
             type: "block",
             data: entry.data,
-            el: entry.el
+            el: entry.el,
+            score: Number(entry.el.dataset.searchScore ?? 0)
         });
-
     }
 
     if (!candidates.length) return;
 
     candidates.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
 
         const pos = a.el.compareDocumentPosition(b.el);
 
@@ -39,22 +37,20 @@ export function focusFirstSearchMatch() {
         if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
 
         return 0;
-
     });
 
-    const first = candidates[0];
+    const best = candidates[0];
 
-    first.el.scrollIntoView({
+    best.el.scrollIntoView({
         behavior: "smooth",
         block: "center"
     });
 
-    if (first.type === "category") {
-        focusSidebarCategory(first.data.id);
+    if (best.type === "category") {
+        focusSidebarCategory(best.data.id);
     } else {
-        focusSidebarBlock(first.data.id);
+        focusSidebarBlock(best.data.id);
     }
-
 }
 
 export function focusContentCategory(catId) {
@@ -116,3 +112,4 @@ export function focusSidebarCategory(catId) {
     });
 
 }
+

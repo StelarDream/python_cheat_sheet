@@ -1,24 +1,18 @@
 import { state } from "../state.js";
-
 import { buildDOM } from "../render/buildDOM.js";
-
 import {
     getBlockMatchInfo,
     getCategoryMatchInfo
 } from "./matchers.js";
-
 import { updateHighlight } from "../ui/highlight.js";
-
-import { focusFirstSearchMatch } from "../ui/focus.js";
-
+import { focusBestSearchMatch } from "../ui/focus.js";
 
 /* =========================
    Public API
 ========================= */
 
 export function applySearch() {
-
-    const query = (state.searchQuery ?? "").trim().toLowerCase();
+    const query = (state.searchQuery ?? "").trim();
 
     restoreAutoExpanded();
 
@@ -30,111 +24,92 @@ export function applySearch() {
     const blockMatches = new Map();
     const categoryMatches = new Map();
 
-    /* scan raw data instead of DOM */
-
     for (const cat of (state.data?.categories ?? [])) {
         scanCategory(cat, query, blockMatches, categoryMatches);
     }
 
-    /* open categories that contain matches */
-
-    for (const [catId, matched] of categoryMatches) {
-
-        if (!matched) continue;
+    for (const [catId, info] of categoryMatches) {
+        if (!info?.matched) continue;
 
         if (state.collapsed.has(catId)) {
-
             state.collapsed.delete(catId);
             state.autoExpanded.add(catId);
-
         }
-
     }
-
-    /* rebuild DOM once */
 
     buildDOM();
 
-    /* apply visibility */
-
     for (const entry of state.categories) {
+        const info = categoryMatches.get(entry.data.id) ?? { matched: false, score: 0 };
 
-        const visible = categoryMatches.get(entry.data.id);
-
-        entry.el.style.display = visible ? "" : "none";
-
+        entry.el.style.display = info.matched ? "" : "none";
+        entry.el.dataset.searchScore = String(info.score ?? 0);
     }
 
     for (const entry of state.blocks) {
+        const info = blockMatches.get(entry.data.id) ?? { matched: false, score: 0 };
 
-        const visible = blockMatches.get(entry.data.id);
+        entry.el.style.display = info.matched ? "" : "none";
+        entry.el.dataset.searchScore = String(info.score ?? 0);
 
-        entry.el.style.display = visible ? "" : "none";
-
-        if (visible) {
+        if (info.matched) {
             updateHighlight(entry.el, query);
         }
-
     }
 
-    focusFirstSearchMatch(query);
-
+    focusBestSearchMatch();
 }
-
 
 /* =========================
    Helpers
 ========================= */
 
 export function restoreAutoExpanded() {
-
     for (const id of state.autoExpanded) {
         state.collapsed.add(id);
     }
 
     state.autoExpanded.clear();
-
 }
 
 function scanCategory(cat, query, blockMatches, categoryMatches) {
-
     let categoryMatched = false;
-
-    /* check blocks */
+    let bestScore = 0;
 
     for (const block of (cat.blocks ?? [])) {
+        const info = getBlockMatchInfo(block, query);
 
-        const match = getBlockMatchInfo(block, query);
+        blockMatches.set(block.id, info);
 
-        if (match.matched) {
-            blockMatches.set(block.id, true);
+        if (info.matched) {
             categoryMatched = true;
-        } else {
-            blockMatches.set(block.id, false);
+            bestScore = Math.max(bestScore, info.score);
         }
-
     }
-
-    /* check subcategories */
 
     for (const sub of (cat.subcategories ?? [])) {
+        const subInfo = scanCategory(sub, query, blockMatches, categoryMatches);
 
-        const subMatch = scanCategory(sub, query, blockMatches, categoryMatches);
-
-        if (subMatch) {
+        if (subInfo.matched) {
             categoryMatched = true;
+            bestScore = Math.max(bestScore, subInfo.score);
         }
-
     }
 
-    /* check category itself */
+    const selfInfo = getCategoryMatchInfo(cat, query);
 
-    if (getCategoryMatchInfo(cat, query).matched) {
+    if (selfInfo.matched) {
         categoryMatched = true;
+        bestScore = Math.max(bestScore, selfInfo.score);
     }
 
-    categoryMatches.set(cat.id, categoryMatched);
+    const finalInfo = {
+        matched: categoryMatched,
+        score: bestScore,
+        reason: selfInfo.reason ?? null
+    };
 
-    return categoryMatched;
+    categoryMatches.set(cat.id, finalInfo);
 
+    return finalInfo;
 }

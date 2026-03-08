@@ -13,11 +13,8 @@ async function init() {
     document
         .getElementById("search")
         .addEventListener("input", e => {
-
-            state.searchQuery = e.target.value.toLowerCase();
-
+            state.searchQuery = e.target.value;
             applySearch();
-
         });
 
 }
