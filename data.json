@@ -91,6 +91,20 @@
                     ]
                 },
                 {
+                    "id": "__text_signature__",
+                    "name": "__text_signature__",
+                    "kind": "attribute",
+                    "value_type": "str | None",
+                    "desc": "Text representation of a callable's signature.",
+                    "point": [
+                        "Used by the inspect module.",
+                        "Common on built-in functions implemented in C."
+                    ],
+                    "getters": [
+                        "obj.__text_signature__"
+                    ]
+                },
+                {
                     "id": "__module__",
                     "name": "__module__",
                     "link": "https://docs.python.org/3/reference/datamodel.html#object.__module__",
@@ -387,6 +401,20 @@
                             ]
                         },
                         {
+                            "id": "__base__",
+                            "name": "__base__",
+                            "kind": "attribute",
+                            "value_type": "type",
+                            "desc": "Immediate base class used for memory layout.",
+                            "point": [
+                                "Usually the first entry of __bases__.",
+                                "Represents the primary base class used internally by CPython."
+                            ],
+                            "getters": [
+                                "Class.__base__"
+                            ]
+                        },
+                        {
                             "id": "__mro__",
                             "name": "__mro__",
                             "link": "https://docs.python.org/3/reference/datamodel.html#type.__mro__",
@@ -398,6 +426,20 @@
                             ],
                             "getters": [
                                 "Class.__mro__"
+                            ]
+                        },
+                        {
+                            "id": "__type_params__",
+                            "name": "__type_params__",
+                            "kind": "attribute",
+                            "value_type": "tuple",
+                            "desc": "Type parameters declared on a generic class.",
+                            "point": [
+                                "Introduced by PEP 695.",
+                                "Used for new-style Python generics."
+                            ],
+                            "getters": [
+                                "Class.__type_params__"
                             ]
                         }
                     ]
@@ -699,6 +741,108 @@
                             "result": "True",
                             "link": ""
                         }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "python-import-system",
+            "name": "Import System Protocol",
+            "link": "https://docs.python.org/3/reference/import.html",
+            "desc": "Attributes used by Python's module import system to describe how modules are located, loaded, and executed.",
+            "point": [
+                "These attributes are automatically assigned to modules during import.",
+                "They provide metadata about the module's origin and loading process.",
+                "Used internally by Python's importlib machinery."
+            ],
+            "blocks": [
+                {
+                    "id": "__loader__",
+                    "name": "__loader__",
+                    "kind": "attribute",
+                    "value_type": "Loader | None",
+                    "desc": "Object responsible for loading the module.",
+                    "point": [
+                        "Part of Python's importlib system.",
+                        "Provides the logic used to load the module."
+                    ],
+                    "getters": [
+                        "module.__loader__"
+                    ]
+                },
+                {
+                    "id": "__spec__",
+                    "name": "__spec__",
+                    "kind": "attribute",
+                    "value_type": "ModuleSpec",
+                    "desc": "Module specification describing how the module should be loaded.",
+                    "point": [
+                        "Contains metadata about the module.",
+                        "Created by the import system during module loading."
+                    ],
+                    "getters": [
+                        "module.__spec__"
+                    ]
+                },
+                {
+                    "id": "__package__",
+                    "name": "__package__",
+                    "kind": "attribute",
+                    "value_type": "str | None",
+                    "desc": "Name of the package the module belongs to.",
+                    "point": [
+                        "Used for resolving relative imports."
+                    ],
+                    "getters": [
+                        "module.__package__"
+                    ]
+                },
+                {
+                    "id": "__file__",
+                    "name": "__file__",
+                    "kind": "attribute",
+                    "value_type": "str",
+                    "desc": "Path to the module's source file.",
+                    "point": [
+                        "Usually points to the .py file defining the module.",
+                        "May point to compiled or bundled files depending on the loader."
+                    ],
+                    "getters": [
+                        "module.__file__"
+                    ],
+                    "examples": [
+                        {
+                            "code": "import math\nmath.__file__",
+                            "result": "path to the module file",
+                            "link": ""
+                        }
+                    ]
+                },
+                {
+                    "id": "__cached__",
+                    "name": "__cached__",
+                    "kind": "attribute",
+                    "value_type": "str | None",
+                    "desc": "Path to the compiled bytecode cache file.",
+                    "point": [
+                        "Usually points to a .pyc file in the __pycache__ directory."
+                    ],
+                    "getters": [
+                        "module.__cached__"
+                    ]
+                },
+                {
+                    "id": "__path__",
+                    "name": "__path__",
+                    "kind": "attribute",
+                    "value_type": "Iterable[str]",
+                    "desc": "Search locations for submodules of a package.",
+                    "point": [
+                        "Only present on packages, not normal modules.",
+                        "Used by the import system to locate submodules."
+                    ],
+                    "getters": [
+                        "package.__path__"
                     ]
                 }
             ]
@@ -3517,6 +3661,88 @@
                                 "pickle.loads(data)"
                             ]
                         }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "cpython-implementation",
+            "name": "CPython Implementation Details",
+            "link": "https://docs.python.org/3/c-api/typeobj.html",
+            "desc": "Attributes exposing the internal memory layout of CPython types.",
+            "point": [
+                "These attributes describe the internal structure of Python objects in CPython.",
+                "They are mainly useful for interpreter developers and advanced introspection.",
+                "They are implementation details and may not exist in other Python implementations."
+            ],
+            "blocks": [
+                {
+                    "id": "__basicsize__",
+                    "name": "__basicsize__",
+                    "kind": "attribute",
+                    "value_type": "int",
+                    "desc": "Size of the base object structure in bytes.",
+                    "point": [
+                        "Represents the fixed memory size of instances of the type.",
+                        "Used internally by CPython when allocating objects."
+                    ],
+                    "getters": [
+                        "Class.__basicsize__"
+                    ]
+                },
+                {
+                    "id": "__itemsize__",
+                    "name": "__itemsize__",
+                    "kind": "attribute",
+                    "value_type": "int",
+                    "desc": "Size of each additional element for variable-sized objects.",
+                    "point": [
+                        "Used for types that store extra elements after the base structure.",
+                        "Examples include tuples and other variable-length objects."
+                    ],
+                    "getters": [
+                        "Class.__itemsize__"
+                    ]
+                },
+                {
+                    "id": "__dictoffset__",
+                    "name": "__dictoffset__",
+                    "kind": "attribute",
+                    "value_type": "int",
+                    "desc": "Offset of the instance dictionary within the object structure.",
+                    "point": [
+                        "Defines where the instance __dict__ is stored.",
+                        "Used internally by CPython's object layout."
+                    ],
+                    "getters": [
+                        "Class.__dictoffset__"
+                    ]
+                },
+                {
+                    "id": "__weakrefoffset__",
+                    "name": "__weakrefoffset__",
+                    "kind": "attribute",
+                    "value_type": "int",
+                    "desc": "Offset of the weak reference list within the object structure.",
+                    "point": [
+                        "Used internally by CPython to support weak references."
+                    ],
+                    "getters": [
+                        "Class.__weakrefoffset__"
+                    ]
+                },
+                {
+                    "id": "__flags__",
+                    "name": "__flags__",
+                    "kind": "attribute",
+                    "value_type": "int",
+                    "desc": "Bit flags describing interpreter-level properties of the type.",
+                    "point": [
+                        "Used internally by CPython's runtime.",
+                        "Defines characteristics such as heap allocation or garbage collection support."
+                    ],
+                    "getters": [
+                        "Class.__flags__"
                     ]
                 }
             ]
